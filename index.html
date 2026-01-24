@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beam Scale - Compare Prices</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚖️ Beam Scale</h1>
+            <p>Compare prices and find the best deals</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab(0)">Search Products</button>
+            <button class="tab" onclick="switchTab(1)">Amazon Transactions</button>
+        </div>
+
+        <div class="tab-content active" id="search-tab">
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search for products...">
+                    <button class="search-btn" onclick="searchProducts()">Search</button>
+                </div>
+            </div>
+
+            <div id="results" class="no-results">
+                <h3>Start searching to compare prices!</h3>
+                <p>Enter a product name above and we'll search across all major stores</p>
+            </div>
+        </div>
+
+        <div class="tab-content" id="transaction-tab">
+            <div class="login-container" id="loginForm">
+                <h2>Login to Amazon</h2>
+                <div class="form-group">
+                    <label>Email or Phone</label>
+                    <input type="text" id="email" placeholder="Enter your email or phone">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter your password">
+                </div>
+                <button class="login-btn" onclick="login()">Sign In</button>
+            </div>
+
+            <div class="transactions" id="transactionList">
+                <h2 style="margin-bottom: 30px; color: #333;">Your Amazon Transactions</h2>
+                <div id="transactionData"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample product database - simulating API responses
+        const productDatabase = {
+            'laptop': {
+                amazon: { name: 'Dell Inspiron 15 Laptop', price: 45999, available: true },
+                flipkart: { name: 'Dell Inspiron 15 Laptop', price: 46499, available: true },
+                meesho: { name: 'Dell Inspiron 15 Laptop', price: 0, available: false },
+                myntra: { name: 'Dell Inspiron 15 Laptop', price: 0, available: false },
+                ajio: { name: 'Dell Inspiron 15 Laptop', price: 0, available: false }
+            },
+            'shoes': {
+                amazon: { name: 'Nike Running Shoes', price: 3499, available: true },
+                flipkart: { name: 'Nike Running Shoes', price: 3299, available: true },
+                meesho: { name: 'Nike Running Shoes', price: 2999, available: true },
+                myntra: { name: 'Nike Running Shoes', price: 3199, available: true },
+                ajio: { name: 'Nike Running Shoes', price: 3399, available: true }
+            },
+            'shirt': {
+                amazon: { name: 'Cotton Casual Shirt', price: 799, available: true },
+                flipkart: { name: 'Cotton Casual Shirt', price: 749, available: true },
+                meesho: { name: 'Cotton Casual Shirt', price: 599, available: true },
+                myntra: { name: 'Cotton Casual Shirt', price: 899, available: true },
+                ajio: { name: 'Cotton Casual Shirt', price: 849, available: true }
+            },
+            'phone': {
+                amazon: { name: 'Samsung Galaxy S24', price: 74999, available: true },
+                flipkart: { name: 'Samsung Galaxy S24', price: 73999, available: true },
+                meesho: { name: 'Samsung Galaxy S24', price: 0, available: false },
+                myntra: { name: 'Samsung Galaxy S24', price: 0, available: false },
+                ajio: { name: 'Samsung Galaxy S24', price: 0, available: false }
+            },
+            'watch': {
+                amazon: { name: 'Apple Watch Series 9', price: 41900, available: true },
+                flipkart: { name: 'Apple Watch Series 9', price: 42499, available: true },
+                meesho: { name: 'Apple Watch Series 9', price: 0, available: false },
+                myntra: { name: 'Apple Watch Series 9', price: 39999, available: true },
+                ajio: { name: 'Apple Watch Series 9', price: 40999, available: true }
+            },
+            'headphones': {
+                amazon: { name: 'Sony WH-1000XM5', price: 29990, available: true },
+                flipkart: { name: 'Sony WH-1000XM5', price: 28999, available: true },
+                meesho: { name: 'Sony WH-1000XM5', price: 0, available: false },
+                myntra: { name: 'Sony WH-1000XM5', price: 0, available: false },
+                ajio: { name: 'Sony WH-1000XM5', price: 0, available: false }
+            }
+        };
+
+        const stores = ['amazon', 'flipkart', 'meesho', 'myntra', 'ajio'];
+        
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            tabs[index].classList.add('active');
+            contents[index].classList.add('active');
+        }
+
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const resultsDiv = document.getElementById('results');
+            
+            if (!query) {
+                resultsDiv.innerHTML = '<div class="no-results"><h3>Please enter a search term</h3></div>';
+                return;
+            }
+
+            // Check if product exists in database
+            const productData = productDatabase[query];
+            
+            if (!productData) {
+                resultsDiv.innerHTML = `
+                    <div class="no-results">
+                        <h3>No results found for "${query}"</h3>
+                        <p>Try searching for: laptop, shoes, shirt, phone, watch, or headphones</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Generate results only for stores where product is available
+            let html = '<div class="results-grid">';
+            let foundResults = false;
+            
+            stores.forEach(store => {
+                const product = productData[store];
+                
+                if (product.available) {
+                    foundResults = true;
+                    const storeName = store.charAt(0).toUpperCase() + store.slice(1);
+                    
+                    html += `
+                        <div class="result-card">
+                            <span class="store-badge ${store}">${storeName}</span>
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-price">₹${product.price.toLocaleString('en-IN')}</div>
+                            <button class="view-btn" onclick="alert('Redirecting to ${storeName}...')">View on ${storeName}</button>
+                        </div>
+                    `;
+                }
+            });
+            
+            html += '</div>';
+            
+            if (foundResults) {
+                resultsDiv.innerHTML = html;
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="no-results">
+                        <h3>Product not available</h3>
+                        <p>This product is currently not available on any store</p>
+                    </div>
+                `;
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProducts();
+            }
+        });
+
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+
+            // Simulate login and show transactions
+            document.getElementById('loginForm').style.display = 'none';
+            const transactionList = document.getElementById('transactionList');
+            transactionList.classList.add('active');
+            
+            // Generate sample transactions
+            const transactions = [
+                { date: '2026-01-20', item: 'Wireless Headphones', amount: '2,499.00', status: 'Delivered' },
+                { date: '2026-01-15', item: 'Smart Watch', amount: '4,999.00', status: 'Delivered' },
+                { date: '2026-01-10', item: 'Phone Case', amount: '299.00', status: 'Delivered' },
+                { date: '2026-01-05', item: 'USB Cable', amount: '199.00', status: 'Delivered' },
+                { date: '2025-12-28', item: 'Laptop Bag', amount: '1,499.00', status: 'Delivered' },
+                { date: '2025-12-20', item: 'Bluetooth Speaker', amount: '1,999.00', status: 'Delivered' }
+            ];
+            
+            let transHTML = '';
+            transactions.forEach(trans => {
+                transHTML += `
+                    <div class="transaction-card">
+                        <div class="transaction-header">
+                            <div>
+                                <div class="transaction-item">${trans.item}</div>
+                                <div class="transaction-date">${trans.date}</div>
+                            </div>
+                            <div class="transaction-amount">₹${trans.amount}</div>
+                        </div>
+                        <div class="transaction-status">${trans.status}</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('transactionData').innerHTML = transHTML;
+        }
+    </script>
+</body>
+</html>
