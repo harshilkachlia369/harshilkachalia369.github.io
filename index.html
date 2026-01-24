@@ -3,14 +3,503 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beam Scale - Compare Prices</title>
-    <link rel="stylesheet" href="style.css">
+    <title>⚖️ Beam Scale - Compare Prices</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100px); }
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 18px 25px;
+            font-size: 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-btn {
+            padding: 18px 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .filters-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-title {
+            font-size: 1.4rem;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .filter-group {
+            margin-bottom: 25px;
+        }
+
+        .filter-label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+
+        .filter-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .filter-options label {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .filter-options label:hover {
+            background: #f0f0f0;
+            border-color: #667eea;
+        }
+
+        .filter-checkbox, .store-filter, .brand-filter {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .sort-select {
+            width: 100%;
+            padding: 12px 18px;
+            font-size: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .sort-select:focus {
+            border-color: #667eea;
+        }
+
+        .clear-filters-btn {
+            width: 100%;
+            padding: 14px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .clear-filters-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .results-count {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .product-section-title {
+            font-size: 1.6rem;
+            color: #333;
+            margin: 30px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            font-weight: 700;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .store-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .store-badge.amazon { background: linear-gradient(135deg, #FF9900 0%, #FF6B00 100%); }
+        .store-badge.flipkart { background: linear-gradient(135deg, #2874F0 0%, #1557BF 100%); }
+        .store-badge.meesho { background: linear-gradient(135deg, #F43397 0%, #D11876 100%); }
+        .store-badge.myntra { background: linear-gradient(135deg, #FF3F6C 0%, #E62958 100%); }
+        .store-badge.ajio { background: linear-gradient(135deg, #C3A05B 0%, #9D7D3E 100%); }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            min-height: 50px;
+        }
+
+        .product-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .view-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .no-results h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .no-results p {
+            font-size: 1.1rem;
+            color: #777;
+        }
+
+        .login-container {
+            max-width: 450px;
+            margin: 50px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .transactions {
+            display: none;
+        }
+
+        .transactions.active {
+            display: block;
+        }
+
+        .transaction-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .transaction-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .transaction-item {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .transaction-date {
+            color: #777;
+            font-size: 0.95rem;
+        }
+
+        .transaction-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .transaction-status {
+            display: inline-block;
+            padding: 6px 16px;
+            background: #28a745;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>⚖️ Beam Scale</h1>
-            <p>Compare prices and find the best deals</p>
+            <p>Compare prices across top Indian retailers and find the best deals</p>
         </div>
 
         <div class="tabs">
@@ -21,23 +510,25 @@
         <div class="tab-content active" id="search-tab">
             <div class="search-container">
                 <div class="search-box">
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search for specific products like 'Adidas Ultraboost', 'iPhone 15 Pro'...">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search for products like 'iPhone 15', 'Nike Shoes', 'Samsung TV', 'Boat Earbuds'...">
                     <button class="search-btn" onclick="searchProducts()">Search</button>
                 </div>
 
-                <!-- Filter Section -->
                 <div class="filters-section">
                     <h3 class="filter-title">Filters</h3>
                     
                     <div class="filter-group">
                         <label class="filter-label">Price Range</label>
                         <div class="filter-options">
-                            <label><input type="checkbox" class="filter-checkbox" value="0-1000" onchange="applyFilters()"> Under ₹1,000</label>
-                            <label><input type="checkbox" class="filter-checkbox" value="1000-5000" onchange="applyFilters()"> ₹1,000 - ₹5,000</label>
+                            <label><input type="checkbox" class="filter-checkbox" value="0-500" onchange="applyFilters()"> Under ₹500</label>
+                            <label><input type="checkbox" class="filter-checkbox" value="500-1000" onchange="applyFilters()"> ₹500 - ₹1,000</label>
+                            <label><input type="checkbox" class="filter-checkbox" value="1000-2500" onchange="applyFilters()"> ₹1,000 - ₹2,500</label>
+                            <label><input type="checkbox" class="filter-checkbox" value="2500-5000" onchange="applyFilters()"> ₹2,500 - ₹5,000</label>
                             <label><input type="checkbox" class="filter-checkbox" value="5000-10000" onchange="applyFilters()"> ₹5,000 - ₹10,000</label>
                             <label><input type="checkbox" class="filter-checkbox" value="10000-25000" onchange="applyFilters()"> ₹10,000 - ₹25,000</label>
                             <label><input type="checkbox" class="filter-checkbox" value="25000-50000" onchange="applyFilters()"> ₹25,000 - ₹50,000</label>
-                            <label><input type="checkbox" class="filter-checkbox" value="50000-999999" onchange="applyFilters()"> Above ₹50,000</label>
+                            <label><input type="checkbox" class="filter-checkbox" value="50000-100000" onchange="applyFilters()"> ₹50,000 - ₹1,00,000</label>
+                            <label><input type="checkbox" class="filter-checkbox" value="100000-9999999" onchange="applyFilters()"> Above ₹1,00,000</label>
                         </div>
                     </div>
 
@@ -49,20 +540,6 @@
                             <label><input type="checkbox" class="store-filter" value="meesho" checked onchange="applyFilters()"> Meesho</label>
                             <label><input type="checkbox" class="store-filter" value="myntra" checked onchange="applyFilters()"> Myntra</label>
                             <label><input type="checkbox" class="store-filter" value="ajio" checked onchange="applyFilters()"> Ajio</label>
-                        </div>
-                    </div>
-
-                    <div class="filter-group">
-                        <label class="filter-label">Brand</label>
-                        <div class="filter-options">
-                            <label><input type="checkbox" class="brand-filter" value="nike" onchange="applyFilters()"> Nike</label>
-                            <label><input type="checkbox" class="brand-filter" value="adidas" onchange="applyFilters()"> Adidas</label>
-                            <label><input type="checkbox" class="brand-filter" value="puma" onchange="applyFilters()"> Puma</label>
-                            <label><input type="checkbox" class="brand-filter" value="apple" onchange="applyFilters()"> Apple</label>
-                            <label><input type="checkbox" class="brand-filter" value="samsung" onchange="applyFilters()"> Samsung</label>
-                            <label><input type="checkbox" class="brand-filter" value="sony" onchange="applyFilters()"> Sony</label>
-                            <label><input type="checkbox" class="brand-filter" value="oneplus" onchange="applyFilters()"> OnePlus</label>
-                            <label><input type="checkbox" class="brand-filter" value="motorola" onchange="applyFilters()"> Motorola</label>
                         </div>
                     </div>
 
@@ -82,7 +559,7 @@
 
             <div id="results" class="no-results">
                 <h3>Start searching to compare prices!</h3>
-                <p>Try searching: "Adidas Ultraboost", "iPhone 15 Pro", "Sony WH-1000XM5", "Nike Air Max"</p>
+                <p>Try searching: "iPhone 15 Pro", "Boat Airdopes", "Nike Air Max", "Samsung TV", "Laptop"</p>
             </div>
         </div>
 
@@ -108,308 +585,49 @@
     </div>
 
     <script>
-        // Comprehensive product database with ALL products
         const productDatabase = [
-            // Nike Shoes
-            { name: 'Nike Alphafly Next% 2', brand: 'nike', category: 'shoes', prices: { amazon: 24999, flipkart: 24499, meesho: 23999, myntra: 24799, ajio: 24299 } },
-            { name: 'Nike Alphafly 3', brand: 'nike', category: 'shoes', prices: { amazon: 26999, flipkart: 26499, meesho: 25999, myntra: 26799, ajio: 26299 } },
-            { name: 'Nike Air Max 270', brand: 'nike', category: 'shoes', prices: { amazon: 12999, flipkart: 12499, meesho: 11999, myntra: 12799, ajio: 12299 } },
-            { name: 'Nike React Infinity Run', brand: 'nike', category: 'shoes', prices: { amazon: 11999, flipkart: 11499, meesho: 10999, myntra: 11799, ajio: 11299 } },
-            { name: 'Nike Air Force 1', brand: 'nike', category: 'shoes', prices: { amazon: 8999, flipkart: 8699, meesho: 8299, myntra: 8899, ajio: 8499 } },
+            // Electronics - Phones (Under 10k)
+            { name: 'Redmi 12C (64GB)', brand: 'xiaomi', category: 'phone', prices: { amazon: 7999, flipkart: 7799, meesho: 7599, myntra: 7899, ajio: 7699 } },
+            { name: 'Redmi 12C (128GB)', brand: 'xiaomi', category: 'phone', prices: { amazon: 8999, flipkart: 8799, meesho: 8599, myntra: 8899, ajio: 8699 } },
+            { name: 'Realme Narzo N53 (64GB)', brand: 'realme', category: 'phone', prices: { amazon: 8499, flipkart: 8299, meesho: 8099, myntra: 8399, ajio: 8199 } },
+            { name: 'Realme Narzo N53 (128GB)', brand: 'realme', category: 'phone', prices: { amazon: 9499, flipkart: 9299, meesho: 9099, myntra: 9399, ajio: 9199 } },
+            { name: 'Samsung Galaxy M14 5G (128GB)', brand: 'samsung', category: 'phone', prices: { amazon: 9999, flipkart: 9799, meesho: 9599, myntra: 9899, ajio: 9699 } },
             
-            // Adidas Shoes
-            { name: 'Adidas Ultraboost 22', brand: 'adidas', category: 'shoes', prices: { amazon: 14999, flipkart: 14499, meesho: 13999, myntra: 14799, ajio: 14599 } },
-            { name: 'Adidas Stan Smith', brand: 'adidas', category: 'shoes', prices: { amazon: 6999, flipkart: 6799, meesho: 6499, myntra: 6899, ajio: 6599 } },
-            { name: 'Adidas Superstar', brand: 'adidas', category: 'shoes', prices: { amazon: 7999, flipkart: 7699, meesho: 7299, myntra: 7899, ajio: 7499 } },
-            { name: 'Adidas NMD R1', brand: 'adidas', category: 'shoes', prices: { amazon: 11999, flipkart: 11699, meesho: 11299, myntra: 11899, ajio: 11499 } },
+            // Electronics - Phones (10k-20k)
+            { name: 'Motorola G67 Power 5G (128GB)', brand: 'motorola', category: 'phone', prices: { amazon: 13999, flipkart: 13799, meesho: 13599, myntra: 13899, ajio: 13699 } },
+            { name: 'Motorola G67 Power 5G (256GB)', brand: 'motorola', category: 'phone', prices: { amazon: 15999, flipkart: 15799, meesho: 15599, myntra: 15899, ajio: 15699 } },
+            { name: 'OnePlus Nord CE 3 Lite (128GB)', brand: 'oneplus', category: 'phone', prices: { amazon: 16999, flipkart: 16799, meesho: 16599, myntra: 16899, ajio: 16699 } },
+            { name: 'OnePlus Nord CE 3 Lite (256GB)', brand: 'oneplus', category: 'phone', prices: { amazon: 18999, flipkart: 18799, meesho: 18599, myntra: 18899, ajio: 18699 } },
+            { name: 'Realme 11 Pro (128GB)', brand: 'realme', category: 'phone', prices: { amazon: 19999, flipkart: 19799, meesho: 19599, myntra: 19899, ajio: 19699 } },
             
-            // Puma Shoes
-            { name: 'Puma Suede Classic', brand: 'puma', category: 'shoes', prices: { amazon: 5999, flipkart: 5699, meesho: 5299, myntra: 5899, ajio: 5499 } },
-            { name: 'Puma RS-X', brand: 'puma', category: 'shoes', prices: { amazon: 8999, flipkart: 8699, meesho: 8299, myntra: 8899, ajio: 8499 } },
-            { name: 'Puma Future Rider', brand: 'puma', category: 'shoes', prices: { amazon: 6999, flipkart: 6699, meesho: 6299, myntra: 6899, ajio: 6499 } },
-
-            // Phones
-            { name: 'Motorola G67 Power 5G (128GB)', brand: 'motorola', category: 'phone', prices: { amazon: 18999, flipkart: 18499, meesho: 17999, myntra: 18799, ajio: 18299 } },
-            { name: 'Motorola G67 Power 5G (256GB)', brand: 'motorola', category: 'phone', prices: { amazon: 20999, flipkart: 20499, meesho: 19999, myntra: 20799, ajio: 20299 } },
-            { name: 'iPhone 15 Pro 128GB', brand: 'apple', category: 'phone', prices: { amazon: 129900, flipkart: 128900, meesho: 127900, myntra: 129500, ajio: 128500 } },
-            { name: 'iPhone 15 Pro 256GB', brand: 'apple', category: 'phone', prices: { amazon: 139900, flipkart: 138900, meesho: 137900, myntra: 139500, ajio: 138500 } },
-            { name: 'iPhone 15 Pro 512GB', brand: 'apple', category: 'phone', prices: { amazon: 159900, flipkart: 158900, meesho: 157900, myntra: 159500, ajio: 158500 } },
-            { name: 'Samsung Galaxy S24 5G (128GB)', brand: 'samsung', category: 'phone', prices: { amazon: 74999, flipkart: 73999, meesho: 72999, myntra: 74799, ajio: 73799 } },
-            { name: 'Samsung Galaxy S24 5G (256GB)', brand: 'samsung', category: 'phone', prices: { amazon: 79999, flipkart: 78999, meesho: 77999, myntra: 79799, ajio: 78799 } },
-            { name: 'OnePlus 12 (256GB)', brand: 'oneplus', category: 'phone', prices: { amazon: 64999, flipkart: 63999, meesho: 62999, myntra: 64799, ajio: 63799 } },
-            { name: 'OnePlus 12 (512GB)', brand: 'oneplus', category: 'phone', prices: { amazon: 69999, flipkart: 68999, meesho: 67999, myntra: 69799, ajio: 68799 } },
-
-            // Headphones
-            { name: 'Sony WH-1000XM5 (Black)', brand: 'sony', category: 'headphones', prices: { amazon: 29990, flipkart: 28990, meesho: 27990, myntra: 29790, ajio: 28790 } },
-            { name: 'Sony WH-1000XM5 (Silver)', brand: 'sony', category: 'headphones', prices: { amazon: 29990, flipkart: 28990, meesho: 27990, myntra: 29790, ajio: 28790 } },
-            { name: 'Apple AirPods Pro 2nd Gen', brand: 'apple', category: 'headphones', prices: { amazon: 24900, flipkart: 23900, meesho: 22900, myntra: 24700, ajio: 23700 } },
-            { name: 'boAt Airdopes 141', brand: 'boat', category: 'headphones', prices: { amazon: 1299, flipkart: 1199, meesho: 1099, myntra: 1279, ajio: 1179 } },
-            { name: 'boAt Airdopes 161', brand: 'boat', category: 'headphones', prices: { amazon: 1499, flipkart: 1399, meesho: 1299, myntra: 1479, ajio: 1379 } },
-
-            // Watches
-            { name: 'Apple Watch Series 9 41mm', brand: 'apple', category: 'watch', prices: { amazon: 41900, flipkart: 40900, meesho: 39900, myntra: 41700, ajio: 40700 } },
-            { name: 'Apple Watch Series 9 45mm', brand: 'apple', category: 'watch', prices: { amazon: 44900, flipkart: 43900, meesho: 42900, myntra: 44700, ajio: 43700 } },
-            { name: 'Samsung Galaxy Watch 6 (40mm)', brand: 'samsung', category: 'watch', prices: { amazon: 28999, flipkart: 27999, meesho: 26999, myntra: 28799, ajio: 27799 } },
-            { name: 'Samsung Galaxy Watch 6 (44mm)', brand: 'samsung', category: 'watch', prices: { amazon: 31999, flipkart: 30999, meesho: 29999, myntra: 31799, ajio: 30799 } }
-        ];
-
-        const stores = [
-            { name: 'Amazon', class: 'amazon' },
-            { name: 'Flipkart', class: 'flipkart' },
-            { name: 'Meesho', class: 'meesho' },
-            { name: 'Myntra', class: 'myntra' },
-            { name: 'Ajio', class: 'ajio' }
-        ];
-
-        let allResults = [];
-        
-        function switchTab(index) {
-            const tabs = document.querySelectorAll('.tab');
-            const contents = document.querySelectorAll('.tab-content');
+            // Electronics - Phones (20k-50k)
+            { name: 'Samsung Galaxy S24 5G (128GB)', brand: 'samsung', category: 'phone', prices: { amazon: 44999, flipkart: 43999, meesho: 42999, myntra: 44799, ajio: 43799 } },
+            { name: 'Samsung Galaxy S24 5G (256GB)', brand: 'samsung', category: 'phone', prices: { amazon: 49999, flipkart: 48999, meesho: 47999, myntra: 49799, ajio: 48799 } },
+            { name: 'OnePlus 12 (256GB)', brand: 'oneplus', category: 'phone', prices: { amazon: 39999, flipkart: 38999, meesho: 37999, myntra: 39799, ajio: 38799 } },
+            { name: 'OnePlus 12 (512GB)', brand: 'oneplus', category: 'phone', prices: { amazon: 44999, flipkart: 43999, meesho: 42999, myntra: 44799, ajio: 43799 } },
+            { name: 'Nothing Phone 2 (256GB)', brand: 'nothing', category: 'phone', prices: { amazon: 34999, flipkart: 33999, meesho: 32999, myntra: 34799, ajio: 33799 } },
             
-            tabs.forEach(tab => tab.classList.remove('active'));
-            contents.forEach(content => content.classList.remove('active'));
+            // Electronics - Phones (Premium 50k+)
+            { name: 'iPhone 15 Pro 128GB', brand: 'apple', category: 'phone', prices: { amazon: 124900, flipkart: 123900, meesho: 122900, myntra: 124500, ajio: 123500 } },
+            { name: 'iPhone 15 Pro 256GB', brand: 'apple', category: 'phone', prices: { amazon: 134900, flipkart: 133900, meesho: 132900, myntra: 134500, ajio: 133500 } },
+            { name: 'iPhone 15 Pro 512GB', brand: 'apple', category: 'phone', prices: { amazon: 154900, flipkart: 153900, meesho: 152900, myntra: 154500, ajio: 153500 } },
+            { name: 'iPhone 15 Pro Max 256GB', brand: 'apple', category: 'phone', prices: { amazon: 144900, flipkart: 143900, meesho: 142900, myntra: 144500, ajio: 143500 } },
+            { name: 'iPhone 15 Pro Max 512GB', brand: 'apple', category: 'phone', prices: { amazon: 164900, flipkart: 163900, meesho: 162900, myntra: 164500, ajio: 163500 } },
+            { name: 'Samsung Galaxy S24 Ultra (512GB)', brand: 'samsung', category: 'phone', prices: { amazon: 104999, flipkart: 103999, meesho: 102999, myntra: 104799, ajio: 103799 } },
             
-            tabs[index].classList.add('active');
-            contents[index].classList.add('active');
-        }
-
-        function generateDynamicProduct(query) {
-            // Determine category and base price from query
-            let category = 'general';
-            let basePrice = 2000;
-            let brand = 'Generic';
-
-            const lowerQuery = query.toLowerCase();
-
-            // Detect category and adjust pricing
-            if (lowerQuery.includes('shoe') || lowerQuery.includes('sneaker') || lowerQuery.includes('boot')) {
-                category = 'shoes';
-                basePrice = 3000 + Math.random() * 7000;
-            } else if (lowerQuery.includes('phone') || lowerQuery.includes('mobile') || lowerQuery.includes('smartphone')) {
-                category = 'phone';
-                basePrice = 15000 + Math.random() * 50000;
-            } else if (lowerQuery.includes('laptop') || lowerQuery.includes('computer') || lowerQuery.includes('notebook')) {
-                category = 'laptop';
-                basePrice = 35000 + Math.random() * 80000;
-            } else if (lowerQuery.includes('watch') || lowerQuery.includes('smartwatch')) {
-                category = 'watch';
-                basePrice = 2000 + Math.random() * 15000;
-            } else if (lowerQuery.includes('headphone') || lowerQuery.includes('earphone') || lowerQuery.includes('earbud') || lowerQuery.includes('airpod')) {
-                category = 'headphones';
-                basePrice = 1000 + Math.random() * 10000;
-            } else if (lowerQuery.includes('shirt') || lowerQuery.includes('tshirt') || lowerQuery.includes('t-shirt') || lowerQuery.includes('top')) {
-                category = 'clothing';
-                basePrice = 500 + Math.random() * 2500;
-            } else if (lowerQuery.includes('jeans') || lowerQuery.includes('pant') || lowerQuery.includes('trouser')) {
-                category = 'clothing';
-                basePrice = 800 + Math.random() * 3500;
-            } else if (lowerQuery.includes('bag') || lowerQuery.includes('backpack') || lowerQuery.includes('luggage')) {
-                category = 'accessories';
-                basePrice = 1000 + Math.random() * 5000;
-            } else if (lowerQuery.includes('tv') || lowerQuery.includes('television')) {
-                category = 'electronics';
-                basePrice = 20000 + Math.random() * 80000;
-            } else if (lowerQuery.includes('tablet') || lowerQuery.includes('ipad')) {
-                category = 'electronics';
-                basePrice = 15000 + Math.random() * 40000;
-            } else if (lowerQuery.includes('speaker')) {
-                category = 'electronics';
-                basePrice = 1500 + Math.random() * 10000;
-            } else if (lowerQuery.includes('camera')) {
-                category = 'electronics';
-                basePrice = 20000 + Math.random() * 100000;
-            } else if (lowerQuery.includes('perfume') || lowerQuery.includes('fragrance')) {
-                category = 'beauty';
-                basePrice = 500 + Math.random() * 5000;
-            } else if (lowerQuery.includes('book')) {
-                category = 'books';
-                basePrice = 200 + Math.random() * 1000;
-            }
-
-            // Detect brand
-            const brands = ['nike', 'adidas', 'puma', 'apple', 'samsung', 'sony', 'oneplus', 'motorola', 'pebble', 'boat', 'noise', 'realme', 'xiaomi', 'oppo', 'vivo', 'asus', 'dell', 'hp', 'lenovo', 'lg', 'mi'];
-            for (let b of brands) {
-                if (lowerQuery.includes(b)) {
-                    brand = b.charAt(0).toUpperCase() + b.slice(1);
-                    break;
-                }
-            }
-
-            // Generate prices for all stores with variation
-            const variation = 0.15; // 15% variation
-            return {
-                name: query.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
-                brand: brand.toLowerCase(),
-                category: category,
-                prices: {
-                    amazon: Math.round(basePrice * (1 + (Math.random() * variation - variation/2))),
-                    flipkart: Math.round(basePrice * (1 + (Math.random() * variation - variation/2))),
-                    meesho: Math.round(basePrice * (1 + (Math.random() * variation - variation/2))),
-                    myntra: Math.round(basePrice * (1 + (Math.random() * variation - variation/2))),
-                    ajio: Math.round(basePrice * (1 + (Math.random() * variation - variation/2)))
-                }
-            };
-        }
-
-        function searchProducts() {
-            const query = document.getElementById('searchInput').value.trim();
-            const resultsDiv = document.getElementById('results');
+            // Electronics - Earbuds (Under 1k)
+            { name: 'boAt Airdopes 141', brand: 'boat', category: 'earbuds', prices: { amazon: 999, flipkart: 949, meesho: 899, myntra: 979, ajio: 929 } },
+            { name: 'boAt Airdopes 131', brand: 'boat', category: 'earbuds', prices: { amazon: 899, flipkart: 849, meesho: 799, myntra: 879, ajio: 829 } },
+            { name: 'Noise Buds VS104', brand: 'noise', category: 'earbuds', prices: { amazon: 799, flipkart: 749, meesho: 699, myntra: 779, ajio: 729 } },
+            { name: 'Realme Buds T100', brand: 'realme', category: 'earbuds', prices: { amazon: 999, flipkart: 949, meesho: 899, myntra: 979, ajio: 929 } },
+            { name: 'Boult Audio Z40', brand: 'boult', category: 'earbuds', prices: { amazon: 999, flipkart: 949, meesho: 899, myntra: 979, ajio: 929 } },
+            { name: 'pTron Bassbuds Duo', brand: 'ptron', category: 'earbuds', prices: { amazon: 649, flipkart: 599, meesho: 549, myntra: 629, ajio: 579 } },
+            { name: 'Mivi DuoPods A25', brand: 'mivi', category: 'earbuds', prices: { amazon: 849, flipkart: 799, meesho: 749, myntra: 829, ajio: 779 } },
             
-            if (!query) {
-                resultsDiv.innerHTML = '<div class="no-results"><h3>Please enter a search term</h3></div>';
-                return;
-            }
-
-            const lowerQuery = query.toLowerCase();
-
-            // Search for matching products in database
-            let matchedProducts = productDatabase.filter(product => 
-                product.name.toLowerCase().includes(lowerQuery) ||
-                product.brand.toLowerCase().includes(lowerQuery) ||
-                product.category.toLowerCase().includes(lowerQuery)
-            );
-
-            // If exact matches found, use them
-            if (matchedProducts.length > 0) {
-                allResults = matchedProducts;
-            } else {
-                // Generate dynamic product for ANY search query
-                const dynamicProduct = generateDynamicProduct(query);
-                allResults = [dynamicProduct];
-            }
-
-            applyFilters();
-        }
-
-        function applyFilters() {
-            if (allResults.length === 0) return;
-
-            let filteredResults = [...allResults];
-
-            // Price filter
-            const priceFilters = Array.from(document.querySelectorAll('.filter-checkbox:checked')).map(cb => cb.value);
-            if (priceFilters.length > 0) {
-                filteredResults = filteredResults.filter(product => {
-                    const minPrice = Math.min(...Object.values(product.prices));
-                    return priceFilters.some(range => {
-                        const [min, max] = range.split('-').map(Number);
-                        return minPrice >= min && minPrice <= max;
-                    });
-                });
-            }
-
-            // Brand filter
-            const brandFilters = Array.from(document.querySelectorAll('.brand-filter:checked')).map(cb => cb.value);
-            if (brandFilters.length > 0) {
-                filteredResults = filteredResults.filter(product => brandFilters.includes(product.brand));
-            }
-
-            // Store filter
-            const storeFilters = Array.from(document.querySelectorAll('.store-filter:checked')).map(cb => cb.value);
-
-            // Sort
-            const sortBy = document.getElementById('sortBy').value;
-            if (sortBy === 'price-low') {
-                filteredResults.sort((a, b) => Math.min(...Object.values(a.prices)) - Math.min(...Object.values(b.prices)));
-            } else if (sortBy === 'price-high') {
-                filteredResults.sort((a, b) => Math.min(...Object.values(b.prices)) - Math.min(...Object.values(a.prices)));
-            } else if (sortBy === 'name') {
-                filteredResults.sort((a, b) => a.name.localeCompare(b.name));
-            }
-
-            displayResults(filteredResults, storeFilters);
-        }
-
-        function displayResults(products, storeFilters) {
-            const resultsDiv = document.getElementById('results');
-            
-            if (products.length === 0) {
-                resultsDiv.innerHTML = '<div class="no-results"><h3>No products match your filters</h3><p>Try adjusting your filters</p></div>';
-                return;
-            }
-
-            let html = `<div class="results-count">${products.length} product(s) found</div>`;
-            
-            products.forEach(product => {
-                html += `<h3 class="product-section-title">${product.name}</h3>`;
-                html += '<div class="results-grid">';
-                
-                stores.forEach(store => {
-                    if (storeFilters.includes(store.class)) {
-                        const price = product.prices[store.class];
-                        
-                        html += `
-                            <div class="result-card">
-                                <span class="store-badge ${store.class}">${store.name}</span>
-                                <div class="product-name">${product.name}</div>
-                                <div class="product-price">₹${price.toLocaleString('en-IN')}</div>
-                                <a href="https://www.${store.class}.com" target="_blank" class="view-btn">Visit ${store.name}</a>
-                            </div>
-                        `;
-                    }
-                });
-                
-                html += '</div>';
-            });
-            
-            resultsDiv.innerHTML = html;
-        }
-
-        function clearFilters() {
-            document.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
-            document.querySelectorAll('.brand-filter').forEach(cb => cb.checked = false);
-            document.querySelectorAll('.store-filter').forEach(cb => cb.checked = true);
-            document.getElementById('sortBy').value = 'relevance';
-            applyFilters();
-        }
-
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchProducts();
-            }
-        });
-
-        function login() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            if (!email || !password) {
-                alert('Please enter both email and password');
-                return;
-            }
-
-            document.getElementById('loginForm').style.display = 'none';
-            const transactionList = document.getElementById('transactionList');
-            transactionList.classList.add('active');
-            
-            const transactions = [
-                { date: '2026-01-20', item: 'Wireless Headphones', amount: '2,499.00', status: 'Delivered' },
-                { date: '2026-01-15', item: 'Smart Watch', amount: '4,999.00', status: 'Delivered' },
-                { date: '2026-01-10', item: 'Phone Case', amount: '299.00', status: 'Delivered' },
-                { date: '2026-01-05', item: 'USB Cable', amount: '199.00', status: 'Delivered' },
-                { date: '2025-12-28', item: 'Laptop Bag', amount: '1,499.00', status: 'Delivered' },
-                { date: '2025-12-20', item: 'Bluetooth Speaker', amount: '1,999.00', status: 'Delivered' }
-            ];
-            
-            let transHTML = '';
-            transactions.forEach(trans => {
-                transHTML += `
-                    <div class="transaction-card">
-                        <div class="transaction-header">
-                            <div>
-                                <div class="transaction-item">${trans.item}</div>
-                                <div class="transaction-date">${trans.date}</div>
-                            </div>
-                            <div class="transaction-amount">₹${trans.amount}</div>
-                        </div>
-                        <div class="transaction-status">${trans.status}</div>
-                    </div>
-                `;
-            });
-            
-            document.getElementById('transactionData').innerHTML = transHTML;
-        }
-    </script>
-</body>
-</html>
+            // Electronics - Earbuds (1k-3k)
+            { name: 'boAt Airdopes 161', brand: 'boat', category: 'earbuds', prices: { amazon: 1299, flipkart: 1249, meesho: 1199, myntra: 1279, ajio: 1229 } },
+            { name: 'boAt Airdopes 181', brand: 'boat', category: 'earbuds', prices: { amazon: 1599, flipkart: 1549, meesho: 1499, myntra: 1579, ajio: 1529 } },
+            { name: 'Noise Buds VS201', brand: 'noise', category: 'earbuds', prices: { amazon: 1199, flipkart: 1149, meesho: 1099, myntra: 1179, ajio: 1129 } },
+            { name: 'Realme Buds Air 3', brand: 'realme', category: 'earbuds', prices: { amazon: 2499, flipkart: 2449, meesho: 2399, myntra: 2479, ajio: 2429 } },
+            { name: 'OnePlus Nord Buds', brand: 'oneplus', category: 'earbuds', prices: { amazon: 2499, flipkart: 2449, meesho: 2399, myntra: 2479, ajio: 2429 } },
+            { name: '
