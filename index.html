@@ -24,6 +24,60 @@
                     <input type="text" class="search-input" id="searchInput" placeholder="Search for specific products like 'Adidas Ultraboost', 'iPhone 15 Pro'...">
                     <button class="search-btn" onclick="searchProducts()">Search</button>
                 </div>
+
+                <!-- Filter Section -->
+                <div class="filters-section">
+                    <h3 class="filter-title">Filters</h3>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">Price Range</label>
+                        <div class="filter-options">
+                            <label><input type="checkbox" class="filter-checkbox" value="0-1000" onchange="applyFilters()"> Under ₹1,000</label>
+                            <label><input type="checkbox" class="filter-checkbox" value="1000-5000" onchange="applyFilters()"> ₹1,000 - ₹5,000</label>
+                            <label><input type="checkbox" class="filter-checkbox" value="5000-10000" onchange="applyFilters()"> ₹5,000 - ₹10,000</label>
+                            <label><input type="checkbox" class="filter-checkbox" value="10000-25000" onchange="applyFilters()"> ₹10,000 - ₹25,000</label>
+                            <label><input type="checkbox" class="filter-checkbox" value="25000-50000" onchange="applyFilters()"> ₹25,000 - ₹50,000</label>
+                            <label><input type="checkbox" class="filter-checkbox" value="50000-999999" onchange="applyFilters()"> Above ₹50,000</label>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Stores</label>
+                        <div class="filter-options">
+                            <label><input type="checkbox" class="store-filter" value="amazon" checked onchange="applyFilters()"> Amazon</label>
+                            <label><input type="checkbox" class="store-filter" value="flipkart" checked onchange="applyFilters()"> Flipkart</label>
+                            <label><input type="checkbox" class="store-filter" value="meesho" checked onchange="applyFilters()"> Meesho</label>
+                            <label><input type="checkbox" class="store-filter" value="myntra" checked onchange="applyFilters()"> Myntra</label>
+                            <label><input type="checkbox" class="store-filter" value="ajio" checked onchange="applyFilters()"> Ajio</label>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Brand</label>
+                        <div class="filter-options">
+                            <label><input type="checkbox" class="brand-filter" value="nike" onchange="applyFilters()"> Nike</label>
+                            <label><input type="checkbox" class="brand-filter" value="adidas" onchange="applyFilters()"> Adidas</label>
+                            <label><input type="checkbox" class="brand-filter" value="puma" onchange="applyFilters()"> Puma</label>
+                            <label><input type="checkbox" class="brand-filter" value="apple" onchange="applyFilters()"> Apple</label>
+                            <label><input type="checkbox" class="brand-filter" value="samsung" onchange="applyFilters()"> Samsung</label>
+                            <label><input type="checkbox" class="brand-filter" value="sony" onchange="applyFilters()"> Sony</label>
+                            <label><input type="checkbox" class="brand-filter" value="oneplus" onchange="applyFilters()"> OnePlus</label>
+                            <label><input type="checkbox" class="brand-filter" value="motorola" onchange="applyFilters()"> Motorola</label>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Sort By</label>
+                        <select id="sortBy" class="sort-select" onchange="applyFilters()">
+                            <option value="relevance">Relevance</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="name">Name: A to Z</option>
+                        </select>
+                    </div>
+
+                    <button class="clear-filters-btn" onclick="clearFilters()">Clear All Filters</button>
+                </div>
             </div>
 
             <div id="results" class="no-results">
@@ -54,102 +108,50 @@
     </div>
 
     <script>
-        // Comprehensive product database with specific products
-        const productDatabase = {
-            // Shoes
-            'adidas shoes': [
-                { name: 'Adidas Ultraboost 22', prices: { amazon: 14999, flipkart: 14499, meesho: 13999, myntra: 14799, ajio: 14599 } },
-                { name: 'Adidas Stan Smith', prices: { amazon: 6999, flipkart: 6799, meesho: 6499, myntra: 6899, ajio: 6599 } },
-                { name: 'Adidas Superstar', prices: { amazon: 7999, flipkart: 7699, meesho: 7299, myntra: 7899, ajio: 7499 } }
-            ],
-            'nike alphafly': [
-                { name: 'Nike Alphafly Next% 2', prices: { amazon: 24999, flipkart: 24499, meesho: 23999, myntra: 24799, ajio: 24299 } },
-                { name: 'Nike Alphafly 3', prices: { amazon: 26999, flipkart: 26499, meesho: 25999, myntra: 26799, ajio: 26299 } }
-            ],
-            'nike shoes': [
-                { name: 'Nike Air Max 270', prices: { amazon: 12999, flipkart: 12499, meesho: 11999, myntra: 12799, ajio: 12299 } },
-                { name: 'Nike React Infinity Run', prices: { amazon: 11999, flipkart: 11499, meesho: 10999, myntra: 11799, ajio: 11299 } },
-                { name: 'Nike Air Force 1', prices: { amazon: 8999, flipkart: 8699, meesho: 8299, myntra: 8899, ajio: 8499 } }
-            ],
-            'puma shoes': [
-                { name: 'Puma Suede Classic', prices: { amazon: 5999, flipkart: 5699, meesho: 5299, myntra: 5899, ajio: 5499 } },
-                { name: 'Puma RS-X', prices: { amazon: 8999, flipkart: 8699, meesho: 8299, myntra: 8899, ajio: 8499 } }
-            ],
+        // Comprehensive product database with ALL products
+        const productDatabase = [
+            // Nike Shoes
+            { name: 'Nike Alphafly Next% 2', brand: 'nike', category: 'shoes', prices: { amazon: 24999, flipkart: 24499, meesho: 23999, myntra: 24799, ajio: 24299 } },
+            { name: 'Nike Alphafly 3', brand: 'nike', category: 'shoes', prices: { amazon: 26999, flipkart: 26499, meesho: 25999, myntra: 26799, ajio: 26299 } },
+            { name: 'Nike Air Max 270', brand: 'nike', category: 'shoes', prices: { amazon: 12999, flipkart: 12499, meesho: 11999, myntra: 12799, ajio: 12299 } },
+            { name: 'Nike React Infinity Run', brand: 'nike', category: 'shoes', prices: { amazon: 11999, flipkart: 11499, meesho: 10999, myntra: 11799, ajio: 11299 } },
+            { name: 'Nike Air Force 1', brand: 'nike', category: 'shoes', prices: { amazon: 8999, flipkart: 8699, meesho: 8299, myntra: 8899, ajio: 8499 } },
+            
+            // Adidas Shoes
+            { name: 'Adidas Ultraboost 22', brand: 'adidas', category: 'shoes', prices: { amazon: 14999, flipkart: 14499, meesho: 13999, myntra: 14799, ajio: 14599 } },
+            { name: 'Adidas Stan Smith', brand: 'adidas', category: 'shoes', prices: { amazon: 6999, flipkart: 6799, meesho: 6499, myntra: 6899, ajio: 6599 } },
+            { name: 'Adidas Superstar', brand: 'adidas', category: 'shoes', prices: { amazon: 7999, flipkart: 7699, meesho: 7299, myntra: 7899, ajio: 7499 } },
+            { name: 'Adidas NMD R1', brand: 'adidas', category: 'shoes', prices: { amazon: 11999, flipkart: 11699, meesho: 11299, myntra: 11899, ajio: 11499 } },
+            
+            // Puma Shoes
+            { name: 'Puma Suede Classic', brand: 'puma', category: 'shoes', prices: { amazon: 5999, flipkart: 5699, meesho: 5299, myntra: 5899, ajio: 5499 } },
+            { name: 'Puma RS-X', brand: 'puma', category: 'shoes', prices: { amazon: 8999, flipkart: 8699, meesho: 8299, myntra: 8899, ajio: 8499 } },
+            { name: 'Puma Future Rider', brand: 'puma', category: 'shoes', prices: { amazon: 6999, flipkart: 6699, meesho: 6299, myntra: 6899, ajio: 6499 } },
 
             // Phones
-            'motorola g67 power': [
-                { name: 'Motorola G67 Power 5G (128GB)', prices: { amazon: 18999, flipkart: 18499, meesho: 17999, myntra: 0, ajio: 0 } },
-                { name: 'Motorola G67 Power 5G (256GB)', prices: { amazon: 20999, flipkart: 20499, meesho: 19999, myntra: 0, ajio: 0 } }
-            ],
-            'iphone 15 pro': [
-                { name: 'iPhone 15 Pro 128GB', prices: { amazon: 129900, flipkart: 128900, meesho: 0, myntra: 0, ajio: 0 } },
-                { name: 'iPhone 15 Pro 256GB', prices: { amazon: 139900, flipkart: 138900, meesho: 0, myntra: 0, ajio: 0 } },
-                { name: 'iPhone 15 Pro 512GB', prices: { amazon: 159900, flipkart: 158900, meesho: 0, myntra: 0, ajio: 0 } }
-            ],
-            'samsung galaxy s24': [
-                { name: 'Samsung Galaxy S24 5G (128GB)', prices: { amazon: 74999, flipkart: 73999, meesho: 72999, myntra: 0, ajio: 0 } },
-                { name: 'Samsung Galaxy S24 5G (256GB)', prices: { amazon: 79999, flipkart: 78999, meesho: 77999, myntra: 0, ajio: 0 } }
-            ],
-            'oneplus 12': [
-                { name: 'OnePlus 12 (256GB)', prices: { amazon: 64999, flipkart: 63999, meesho: 62999, myntra: 0, ajio: 0 } },
-                { name: 'OnePlus 12 (512GB)', prices: { amazon: 69999, flipkart: 68999, meesho: 67999, myntra: 0, ajio: 0 } }
-            ],
+            { name: 'Motorola G67 Power 5G (128GB)', brand: 'motorola', category: 'phone', prices: { amazon: 18999, flipkart: 18499, meesho: 17999, myntra: 18799, ajio: 18299 } },
+            { name: 'Motorola G67 Power 5G (256GB)', brand: 'motorola', category: 'phone', prices: { amazon: 20999, flipkart: 20499, meesho: 19999, myntra: 20799, ajio: 20299 } },
+            { name: 'iPhone 15 Pro 128GB', brand: 'apple', category: 'phone', prices: { amazon: 129900, flipkart: 128900, meesho: 127900, myntra: 129500, ajio: 128500 } },
+            { name: 'iPhone 15 Pro 256GB', brand: 'apple', category: 'phone', prices: { amazon: 139900, flipkart: 138900, meesho: 137900, myntra: 139500, ajio: 138500 } },
+            { name: 'iPhone 15 Pro 512GB', brand: 'apple', category: 'phone', prices: { amazon: 159900, flipkart: 158900, meesho: 157900, myntra: 159500, ajio: 158500 } },
+            { name: 'Samsung Galaxy S24 5G (128GB)', brand: 'samsung', category: 'phone', prices: { amazon: 74999, flipkart: 73999, meesho: 72999, myntra: 74799, ajio: 73799 } },
+            { name: 'Samsung Galaxy S24 5G (256GB)', brand: 'samsung', category: 'phone', prices: { amazon: 79999, flipkart: 78999, meesho: 77999, myntra: 79799, ajio: 78799 } },
+            { name: 'OnePlus 12 (256GB)', brand: 'oneplus', category: 'phone', prices: { amazon: 64999, flipkart: 63999, meesho: 62999, myntra: 64799, ajio: 63799 } },
+            { name: 'OnePlus 12 (512GB)', brand: 'oneplus', category: 'phone', prices: { amazon: 69999, flipkart: 68999, meesho: 67999, myntra: 69799, ajio: 68799 } },
 
             // Headphones
-            'sony wh-1000xm5': [
-                { name: 'Sony WH-1000XM5 (Black)', prices: { amazon: 29990, flipkart: 28990, meesho: 27990, myntra: 0, ajio: 0 } },
-                { name: 'Sony WH-1000XM5 (Silver)', prices: { amazon: 29990, flipkart: 28990, meesho: 27990, myntra: 0, ajio: 0 } }
-            ],
-            'airpods pro': [
-                { name: 'Apple AirPods Pro 2nd Gen', prices: { amazon: 24900, flipkart: 23900, meesho: 22900, myntra: 0, ajio: 0 } }
-            ],
-            'boat airdopes': [
-                { name: 'boAt Airdopes 141', prices: { amazon: 1299, flipkart: 1199, meesho: 1099, myntra: 0, ajio: 0 } },
-                { name: 'boAt Airdopes 161', prices: { amazon: 1499, flipkart: 1399, meesho: 1299, myntra: 0, ajio: 0 } }
-            ],
-
-            // Laptops
-            'macbook air m2': [
-                { name: 'MacBook Air M2 (256GB)', prices: { amazon: 114900, flipkart: 113900, meesho: 0, myntra: 0, ajio: 0 } },
-                { name: 'MacBook Air M2 (512GB)', prices: { amazon: 134900, flipkart: 133900, meesho: 0, myntra: 0, ajio: 0 } }
-            ],
-            'dell inspiron': [
-                { name: 'Dell Inspiron 15 (i5, 8GB, 512GB)', prices: { amazon: 54990, flipkart: 53990, meesho: 52990, myntra: 0, ajio: 0 } },
-                { name: 'Dell Inspiron 15 (i7, 16GB, 1TB)', prices: { amazon: 74990, flipkart: 73990, meesho: 72990, myntra: 0, ajio: 0 } }
-            ],
-            'hp pavilion': [
-                { name: 'HP Pavilion 14 (Ryzen 5, 8GB)', prices: { amazon: 51990, flipkart: 50990, meesho: 49990, myntra: 0, ajio: 0 } },
-                { name: 'HP Pavilion 15 (i5, 16GB)', prices: { amazon: 62990, flipkart: 61990, meesho: 60990, myntra: 0, ajio: 0 } }
-            ],
+            { name: 'Sony WH-1000XM5 (Black)', brand: 'sony', category: 'headphones', prices: { amazon: 29990, flipkart: 28990, meesho: 27990, myntra: 29790, ajio: 28790 } },
+            { name: 'Sony WH-1000XM5 (Silver)', brand: 'sony', category: 'headphones', prices: { amazon: 29990, flipkart: 28990, meesho: 27990, myntra: 29790, ajio: 28790 } },
+            { name: 'Apple AirPods Pro 2nd Gen', brand: 'apple', category: 'headphones', prices: { amazon: 24900, flipkart: 23900, meesho: 22900, myntra: 24700, ajio: 23700 } },
+            { name: 'boAt Airdopes 141', brand: 'boat', category: 'headphones', prices: { amazon: 1299, flipkart: 1199, meesho: 1099, myntra: 1279, ajio: 1179 } },
+            { name: 'boAt Airdopes 161', brand: 'boat', category: 'headphones', prices: { amazon: 1499, flipkart: 1399, meesho: 1299, myntra: 1479, ajio: 1379 } },
 
             // Watches
-            'apple watch series 9': [
-                { name: 'Apple Watch Series 9 41mm', prices: { amazon: 41900, flipkart: 40900, meesho: 0, myntra: 39900, ajio: 40500 } },
-                { name: 'Apple Watch Series 9 45mm', prices: { amazon: 44900, flipkart: 43900, meesho: 0, myntra: 42900, ajio: 43500 } }
-            ],
-            'samsung galaxy watch': [
-                { name: 'Samsung Galaxy Watch 6 (40mm)', prices: { amazon: 28999, flipkart: 27999, meesho: 26999, myntra: 28499, ajio: 27499 } },
-                { name: 'Samsung Galaxy Watch 6 (44mm)', prices: { amazon: 31999, flipkart: 30999, meesho: 29999, myntra: 31499, ajio: 30499 } }
-            ],
-            'noise smartwatch': [
-                { name: 'Noise ColorFit Pro 4', prices: { amazon: 2999, flipkart: 2799, meesho: 2599, myntra: 2899, ajio: 2699 } },
-                { name: 'Noise Pulse 2 Max', prices: { amazon: 3499, flipkart: 3299, meesho: 3099, myntra: 3399, ajio: 3199 } }
-            ],
-
-            // Clothing
-            'levi jeans': [
-                { name: "Levi's 511 Slim Fit", prices: { amazon: 2999, flipkart: 2799, meesho: 2599, myntra: 2899, ajio: 2699 } },
-                { name: "Levi's 501 Original Fit", prices: { amazon: 3499, flipkart: 3299, meesho: 3099, myntra: 3399, ajio: 3199 } }
-            ],
-            'zara shirt': [
-                { name: 'Zara Cotton Oxford Shirt', prices: { amazon: 1999, flipkart: 1899, meesho: 1699, myntra: 1949, ajio: 1849 } },
-                { name: 'Zara Linen Blend Shirt', prices: { amazon: 2499, flipkart: 2399, meesho: 2199, myntra: 2449, ajio: 2349 } }
-            ],
-            'h&m tshirt': [
-                { name: 'H&M Cotton T-Shirt', prices: { amazon: 699, flipkart: 649, meesho: 599, myntra: 679, ajio: 629 } },
-                { name: 'H&M Oversized T-Shirt', prices: { amazon: 999, flipkart: 949, meesho: 899, myntra: 979, ajio: 929 } }
-            ]
-        };
+            { name: 'Apple Watch Series 9 41mm', brand: 'apple', category: 'watch', prices: { amazon: 41900, flipkart: 40900, meesho: 39900, myntra: 41700, ajio: 40700 } },
+            { name: 'Apple Watch Series 9 45mm', brand: 'apple', category: 'watch', prices: { amazon: 44900, flipkart: 43900, meesho: 42900, myntra: 44700, ajio: 43700 } },
+            { name: 'Samsung Galaxy Watch 6 (40mm)', brand: 'samsung', category: 'watch', prices: { amazon: 28999, flipkart: 27999, meesho: 26999, myntra: 28799, ajio: 27799 } },
+            { name: 'Samsung Galaxy Watch 6 (44mm)', brand: 'samsung', category: 'watch', prices: { amazon: 31999, flipkart: 30999, meesho: 29999, myntra: 31799, ajio: 30799 } }
+        ];
 
         const stores = [
             { name: 'Amazon', class: 'amazon' },
@@ -158,6 +160,8 @@
             { name: 'Myntra', class: 'myntra' },
             { name: 'Ajio', class: 'ajio' }
         ];
+
+        let allResults = [];
         
         function switchTab(index) {
             const tabs = document.querySelectorAll('.tab');
@@ -170,8 +174,86 @@
             contents[index].classList.add('active');
         }
 
+        function generateDynamicProduct(query) {
+            // Determine category and base price from query
+            let category = 'general';
+            let basePrice = 2000;
+            let brand = 'Generic';
+
+            const lowerQuery = query.toLowerCase();
+
+            // Detect category and adjust pricing
+            if (lowerQuery.includes('shoe') || lowerQuery.includes('sneaker') || lowerQuery.includes('boot')) {
+                category = 'shoes';
+                basePrice = 3000 + Math.random() * 7000;
+            } else if (lowerQuery.includes('phone') || lowerQuery.includes('mobile') || lowerQuery.includes('smartphone')) {
+                category = 'phone';
+                basePrice = 15000 + Math.random() * 50000;
+            } else if (lowerQuery.includes('laptop') || lowerQuery.includes('computer') || lowerQuery.includes('notebook')) {
+                category = 'laptop';
+                basePrice = 35000 + Math.random() * 80000;
+            } else if (lowerQuery.includes('watch') || lowerQuery.includes('smartwatch')) {
+                category = 'watch';
+                basePrice = 2000 + Math.random() * 15000;
+            } else if (lowerQuery.includes('headphone') || lowerQuery.includes('earphone') || lowerQuery.includes('earbud') || lowerQuery.includes('airpod')) {
+                category = 'headphones';
+                basePrice = 1000 + Math.random() * 10000;
+            } else if (lowerQuery.includes('shirt') || lowerQuery.includes('tshirt') || lowerQuery.includes('t-shirt') || lowerQuery.includes('top')) {
+                category = 'clothing';
+                basePrice = 500 + Math.random() * 2500;
+            } else if (lowerQuery.includes('jeans') || lowerQuery.includes('pant') || lowerQuery.includes('trouser')) {
+                category = 'clothing';
+                basePrice = 800 + Math.random() * 3500;
+            } else if (lowerQuery.includes('bag') || lowerQuery.includes('backpack') || lowerQuery.includes('luggage')) {
+                category = 'accessories';
+                basePrice = 1000 + Math.random() * 5000;
+            } else if (lowerQuery.includes('tv') || lowerQuery.includes('television')) {
+                category = 'electronics';
+                basePrice = 20000 + Math.random() * 80000;
+            } else if (lowerQuery.includes('tablet') || lowerQuery.includes('ipad')) {
+                category = 'electronics';
+                basePrice = 15000 + Math.random() * 40000;
+            } else if (lowerQuery.includes('speaker')) {
+                category = 'electronics';
+                basePrice = 1500 + Math.random() * 10000;
+            } else if (lowerQuery.includes('camera')) {
+                category = 'electronics';
+                basePrice = 20000 + Math.random() * 100000;
+            } else if (lowerQuery.includes('perfume') || lowerQuery.includes('fragrance')) {
+                category = 'beauty';
+                basePrice = 500 + Math.random() * 5000;
+            } else if (lowerQuery.includes('book')) {
+                category = 'books';
+                basePrice = 200 + Math.random() * 1000;
+            }
+
+            // Detect brand
+            const brands = ['nike', 'adidas', 'puma', 'apple', 'samsung', 'sony', 'oneplus', 'motorola', 'pebble', 'boat', 'noise', 'realme', 'xiaomi', 'oppo', 'vivo', 'asus', 'dell', 'hp', 'lenovo', 'lg', 'mi'];
+            for (let b of brands) {
+                if (lowerQuery.includes(b)) {
+                    brand = b.charAt(0).toUpperCase() + b.slice(1);
+                    break;
+                }
+            }
+
+            // Generate prices for all stores with variation
+            const variation = 0.15; // 15% variation
+            return {
+                name: query.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+                brand: brand.toLowerCase(),
+                category: category,
+                prices: {
+                    amazon: Math.round(basePrice * (1 + (Math.random() * variation - variation/2))),
+                    flipkart: Math.round(basePrice * (1 + (Math.random() * variation - variation/2))),
+                    meesho: Math.round(basePrice * (1 + (Math.random() * variation - variation/2))),
+                    myntra: Math.round(basePrice * (1 + (Math.random() * variation - variation/2))),
+                    ajio: Math.round(basePrice * (1 + (Math.random() * variation - variation/2)))
+                }
+            };
+        }
+
         function searchProducts() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const query = document.getElementById('searchInput').value.trim();
             const resultsDiv = document.getElementById('results');
             
             if (!query) {
@@ -179,61 +261,90 @@
                 return;
             }
 
+            const lowerQuery = query.toLowerCase();
+
             // Search for matching products in database
-            let matchedProducts = [];
+            let matchedProducts = productDatabase.filter(product => 
+                product.name.toLowerCase().includes(lowerQuery) ||
+                product.brand.toLowerCase().includes(lowerQuery) ||
+                product.category.toLowerCase().includes(lowerQuery)
+            );
+
+            // If exact matches found, use them
+            if (matchedProducts.length > 0) {
+                allResults = matchedProducts;
+            } else {
+                // Generate dynamic product for ANY search query
+                const dynamicProduct = generateDynamicProduct(query);
+                allResults = [dynamicProduct];
+            }
+
+            applyFilters();
+        }
+
+        function applyFilters() {
+            if (allResults.length === 0) return;
+
+            let filteredResults = [...allResults];
+
+            // Price filter
+            const priceFilters = Array.from(document.querySelectorAll('.filter-checkbox:checked')).map(cb => cb.value);
+            if (priceFilters.length > 0) {
+                filteredResults = filteredResults.filter(product => {
+                    const minPrice = Math.min(...Object.values(product.prices));
+                    return priceFilters.some(range => {
+                        const [min, max] = range.split('-').map(Number);
+                        return minPrice >= min && minPrice <= max;
+                    });
+                });
+            }
+
+            // Brand filter
+            const brandFilters = Array.from(document.querySelectorAll('.brand-filter:checked')).map(cb => cb.value);
+            if (brandFilters.length > 0) {
+                filteredResults = filteredResults.filter(product => brandFilters.includes(product.brand));
+            }
+
+            // Store filter
+            const storeFilters = Array.from(document.querySelectorAll('.store-filter:checked')).map(cb => cb.value);
+
+            // Sort
+            const sortBy = document.getElementById('sortBy').value;
+            if (sortBy === 'price-low') {
+                filteredResults.sort((a, b) => Math.min(...Object.values(a.prices)) - Math.min(...Object.values(b.prices)));
+            } else if (sortBy === 'price-high') {
+                filteredResults.sort((a, b) => Math.min(...Object.values(b.prices)) - Math.min(...Object.values(a.prices)));
+            } else if (sortBy === 'name') {
+                filteredResults.sort((a, b) => a.name.localeCompare(b.name));
+            }
+
+            displayResults(filteredResults, storeFilters);
+        }
+
+        function displayResults(products, storeFilters) {
+            const resultsDiv = document.getElementById('results');
             
-            for (let key in productDatabase) {
-                if (query.includes(key) || key.includes(query)) {
-                    matchedProducts = matchedProducts.concat(productDatabase[key]);
-                }
+            if (products.length === 0) {
+                resultsDiv.innerHTML = '<div class="no-results"><h3>No products match your filters</h3><p>Try adjusting your filters</p></div>';
+                return;
             }
 
-            // If no exact match, search by partial match
-            if (matchedProducts.length === 0) {
-                const queryWords = query.split(' ');
-                for (let key in productDatabase) {
-                    for (let word of queryWords) {
-                        if (word.length > 3 && key.includes(word)) {
-                            matchedProducts = matchedProducts.concat(productDatabase[key]);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // If still no match, generate generic results
-            if (matchedProducts.length === 0) {
-                matchedProducts = [{
-                    name: query,
-                    prices: {
-                        amazon: Math.round(1000 + Math.random() * 10000),
-                        flipkart: Math.round(1000 + Math.random() * 10000),
-                        meesho: Math.round(1000 + Math.random() * 10000),
-                        myntra: Math.round(1000 + Math.random() * 10000),
-                        ajio: Math.round(1000 + Math.random() * 10000)
-                    }
-                }];
-            }
-
-            // Display all matched products
-            let html = '';
+            let html = `<div class="results-count">${products.length} product(s) found</div>`;
             
-            matchedProducts.forEach(product => {
-                html += `<h3 style="margin: 30px 0 20px 0; color: #333; font-size: 1.3em;">${product.name}</h3>`;
+            products.forEach(product => {
+                html += `<h3 class="product-section-title">${product.name}</h3>`;
                 html += '<div class="results-grid">';
                 
                 stores.forEach(store => {
-                    const storeKey = store.class;
-                    const price = product.prices[storeKey];
-                    
-                    // Only show if price is greater than 0
-                    if (price > 0) {
+                    if (storeFilters.includes(store.class)) {
+                        const price = product.prices[store.class];
+                        
                         html += `
                             <div class="result-card">
                                 <span class="store-badge ${store.class}">${store.name}</span>
                                 <div class="product-name">${product.name}</div>
                                 <div class="product-price">₹${price.toLocaleString('en-IN')}</div>
-                                <button class="view-btn" onclick="alert('Redirecting to ${store.name}...')">View on ${store.name}</button>
+                                <a href="https://www.${store.class}.com" target="_blank" class="view-btn">Visit ${store.name}</a>
                             </div>
                         `;
                     }
@@ -243,6 +354,14 @@
             });
             
             resultsDiv.innerHTML = html;
+        }
+
+        function clearFilters() {
+            document.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.brand-filter').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.store-filter').forEach(cb => cb.checked = true);
+            document.getElementById('sortBy').value = 'relevance';
+            applyFilters();
         }
 
         document.getElementById('searchInput').addEventListener('keypress', function(e) {
@@ -260,21 +379,17 @@
                 return;
             }
 
-            // Simulate login and show transactions
             document.getElementById('loginForm').style.display = 'none';
             const transactionList = document.getElementById('transactionList');
             transactionList.classList.add('active');
             
-            // Generate sample transactions
             const transactions = [
                 { date: '2026-01-20', item: 'Wireless Headphones', amount: '2,499.00', status: 'Delivered' },
                 { date: '2026-01-15', item: 'Smart Watch', amount: '4,999.00', status: 'Delivered' },
                 { date: '2026-01-10', item: 'Phone Case', amount: '299.00', status: 'Delivered' },
                 { date: '2026-01-05', item: 'USB Cable', amount: '199.00', status: 'Delivered' },
                 { date: '2025-12-28', item: 'Laptop Bag', amount: '1,499.00', status: 'Delivered' },
-                { date: '2025-12-20', item: 'Bluetooth Speaker', amount: '1,999.00', status: 'Delivered' },
-                { date: '2025-12-15', item: 'Gaming Mouse', amount: '1,299.00', status: 'Delivered' },
-                { date: '2025-12-10', item: 'Keyboard', amount: '2,199.00', status: 'Delivered' }
+                { date: '2025-12-20', item: 'Bluetooth Speaker', amount: '1,999.00', status: 'Delivered' }
             ];
             
             let transHTML = '';
