@@ -21,14 +21,14 @@
         <div class="tab-content active" id="search-tab">
             <div class="search-container">
                 <div class="search-box">
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search for products...">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search for any product...">
                     <button class="search-btn" onclick="searchProducts()">Search</button>
                 </div>
             </div>
 
             <div id="results" class="no-results">
                 <h3>Start searching to compare prices!</h3>
-                <p>Enter a product name above and we'll search across all major stores</p>
+                <p>Enter any product name and we'll find the best prices across all stores</p>
             </div>
         </div>
 
@@ -54,53 +54,13 @@
     </div>
 
     <script>
-        // Sample product database - simulating API responses
-        const productDatabase = {
-            'laptop': {
-                amazon: { name: 'Dell Inspiron 15 Laptop', price: 45999, available: true },
-                flipkart: { name: 'Dell Inspiron 15 Laptop', price: 46499, available: true },
-                meesho: { name: 'Dell Inspiron 15 Laptop', price: 0, available: false },
-                myntra: { name: 'Dell Inspiron 15 Laptop', price: 0, available: false },
-                ajio: { name: 'Dell Inspiron 15 Laptop', price: 0, available: false }
-            },
-            'shoes': {
-                amazon: { name: 'Nike Running Shoes', price: 3499, available: true },
-                flipkart: { name: 'Nike Running Shoes', price: 3299, available: true },
-                meesho: { name: 'Nike Running Shoes', price: 2999, available: true },
-                myntra: { name: 'Nike Running Shoes', price: 3199, available: true },
-                ajio: { name: 'Nike Running Shoes', price: 3399, available: true }
-            },
-            'shirt': {
-                amazon: { name: 'Cotton Casual Shirt', price: 799, available: true },
-                flipkart: { name: 'Cotton Casual Shirt', price: 749, available: true },
-                meesho: { name: 'Cotton Casual Shirt', price: 599, available: true },
-                myntra: { name: 'Cotton Casual Shirt', price: 899, available: true },
-                ajio: { name: 'Cotton Casual Shirt', price: 849, available: true }
-            },
-            'phone': {
-                amazon: { name: 'Samsung Galaxy S24', price: 74999, available: true },
-                flipkart: { name: 'Samsung Galaxy S24', price: 73999, available: true },
-                meesho: { name: 'Samsung Galaxy S24', price: 0, available: false },
-                myntra: { name: 'Samsung Galaxy S24', price: 0, available: false },
-                ajio: { name: 'Samsung Galaxy S24', price: 0, available: false }
-            },
-            'watch': {
-                amazon: { name: 'Apple Watch Series 9', price: 41900, available: true },
-                flipkart: { name: 'Apple Watch Series 9', price: 42499, available: true },
-                meesho: { name: 'Apple Watch Series 9', price: 0, available: false },
-                myntra: { name: 'Apple Watch Series 9', price: 39999, available: true },
-                ajio: { name: 'Apple Watch Series 9', price: 40999, available: true }
-            },
-            'headphones': {
-                amazon: { name: 'Sony WH-1000XM5', price: 29990, available: true },
-                flipkart: { name: 'Sony WH-1000XM5', price: 28999, available: true },
-                meesho: { name: 'Sony WH-1000XM5', price: 0, available: false },
-                myntra: { name: 'Sony WH-1000XM5', price: 0, available: false },
-                ajio: { name: 'Sony WH-1000XM5', price: 0, available: false }
-            }
-        };
-
-        const stores = ['amazon', 'flipkart', 'meesho', 'myntra', 'ajio'];
+        const stores = [
+            { name: 'Amazon', class: 'amazon' },
+            { name: 'Flipkart', class: 'flipkart' },
+            { name: 'Meesho', class: 'meesho' },
+            { name: 'Myntra', class: 'myntra' },
+            { name: 'Ajio', class: 'ajio' }
+        ];
         
         function switchTab(index) {
             const tabs = document.querySelectorAll('.tab');
@@ -113,8 +73,15 @@
             contents[index].classList.add('active');
         }
 
+        function generateRandomPrice(basePrice) {
+            // Generate prices within 10-20% variation
+            const variation = basePrice * (0.1 + Math.random() * 0.1);
+            const price = basePrice + (Math.random() > 0.5 ? variation : -variation);
+            return Math.round(price);
+        }
+
         function searchProducts() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const query = document.getElementById('searchInput').value.trim();
             const resultsDiv = document.getElementById('results');
             
             if (!query) {
@@ -122,53 +89,63 @@
                 return;
             }
 
-            // Check if product exists in database
-            const productData = productDatabase[query];
+            // Determine base price based on product type or use random
+            let basePrice = 1000 + Math.random() * 20000;
             
-            if (!productData) {
-                resultsDiv.innerHTML = `
-                    <div class="no-results">
-                        <h3>No results found for "${query}"</h3>
-                        <p>Try searching for: laptop, shoes, shirt, phone, watch, or headphones</p>
-                    </div>
-                `;
-                return;
+            // Adjust base price for common product categories
+            const lowerQuery = query.toLowerCase();
+            if (lowerQuery.includes('laptop') || lowerQuery.includes('computer')) {
+                basePrice = 40000 + Math.random() * 40000;
+            } else if (lowerQuery.includes('phone') || lowerQuery.includes('mobile')) {
+                basePrice = 15000 + Math.random() * 60000;
+            } else if (lowerQuery.includes('watch') || lowerQuery.includes('smartwatch')) {
+                basePrice = 5000 + Math.random() * 35000;
+            } else if (lowerQuery.includes('headphone') || lowerQuery.includes('earphone') || lowerQuery.includes('earbud')) {
+                basePrice = 1000 + Math.random() * 15000;
+            } else if (lowerQuery.includes('shoe') || lowerQuery.includes('sneaker')) {
+                basePrice = 1500 + Math.random() * 8000;
+            } else if (lowerQuery.includes('shirt') || lowerQuery.includes('tshirt') || lowerQuery.includes('t-shirt')) {
+                basePrice = 500 + Math.random() * 2500;
+            } else if (lowerQuery.includes('jeans') || lowerQuery.includes('pant') || lowerQuery.includes('trouser')) {
+                basePrice = 800 + Math.random() * 3500;
+            } else if (lowerQuery.includes('bag') || lowerQuery.includes('backpack')) {
+                basePrice = 800 + Math.random() * 5000;
+            } else if (lowerQuery.includes('tv') || lowerQuery.includes('television')) {
+                basePrice = 15000 + Math.random() * 85000;
+            } else if (lowerQuery.includes('fridge') || lowerQuery.includes('refrigerator')) {
+                basePrice = 12000 + Math.random() * 50000;
+            } else if (lowerQuery.includes('ac') || lowerQuery.includes('air conditioner')) {
+                basePrice = 25000 + Math.random() * 45000;
+            } else if (lowerQuery.includes('camera')) {
+                basePrice = 15000 + Math.random() * 85000;
+            } else if (lowerQuery.includes('tablet') || lowerQuery.includes('ipad')) {
+                basePrice = 15000 + Math.random() * 60000;
+            } else if (lowerQuery.includes('speaker')) {
+                basePrice = 1000 + Math.random() * 15000;
+            } else if (lowerQuery.includes('book')) {
+                basePrice = 200 + Math.random() * 1500;
+            } else if (lowerQuery.includes('perfume') || lowerQuery.includes('fragrance')) {
+                basePrice = 500 + Math.random() * 8000;
             }
 
-            // Generate results only for stores where product is available
+            // Generate results for ALL stores
             let html = '<div class="results-grid">';
-            let foundResults = false;
             
             stores.forEach(store => {
-                const product = productData[store];
+                const price = generateRandomPrice(basePrice);
                 
-                if (product.available) {
-                    foundResults = true;
-                    const storeName = store.charAt(0).toUpperCase() + store.slice(1);
-                    
-                    html += `
-                        <div class="result-card">
-                            <span class="store-badge ${store}">${storeName}</span>
-                            <div class="product-name">${product.name}</div>
-                            <div class="product-price">₹${product.price.toLocaleString('en-IN')}</div>
-                            <button class="view-btn" onclick="alert('Redirecting to ${storeName}...')">View on ${storeName}</button>
-                        </div>
-                    `;
-                }
+                html += `
+                    <div class="result-card">
+                        <span class="store-badge ${store.class}">${store.name}</span>
+                        <div class="product-name">${query}</div>
+                        <div class="product-price">₹${price.toLocaleString('en-IN')}</div>
+                        <button class="view-btn" onclick="alert('Redirecting to ${store.name}...')">View on ${store.name}</button>
+                    </div>
+                `;
             });
             
             html += '</div>';
-            
-            if (foundResults) {
-                resultsDiv.innerHTML = html;
-            } else {
-                resultsDiv.innerHTML = `
-                    <div class="no-results">
-                        <h3>Product not available</h3>
-                        <p>This product is currently not available on any store</p>
-                    </div>
-                `;
-            }
+            resultsDiv.innerHTML = html;
         }
 
         document.getElementById('searchInput').addEventListener('keypress', function(e) {
@@ -198,7 +175,9 @@
                 { date: '2026-01-10', item: 'Phone Case', amount: '299.00', status: 'Delivered' },
                 { date: '2026-01-05', item: 'USB Cable', amount: '199.00', status: 'Delivered' },
                 { date: '2025-12-28', item: 'Laptop Bag', amount: '1,499.00', status: 'Delivered' },
-                { date: '2025-12-20', item: 'Bluetooth Speaker', amount: '1,999.00', status: 'Delivered' }
+                { date: '2025-12-20', item: 'Bluetooth Speaker', amount: '1,999.00', status: 'Delivered' },
+                { date: '2025-12-15', item: 'Gaming Mouse', amount: '1,299.00', status: 'Delivered' },
+                { date: '2025-12-10', item: 'Keyboard', amount: '2,199.00', status: 'Delivered' }
             ];
             
             let transHTML = '';
