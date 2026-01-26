@@ -1,292 +1,373 @@
-// Tab functionality
-const tabButtons = document.querySelectorAll('.tab-button');
+// ====================================
+// TAB SWITCHING FUNCTIONALITY
+// ====================================
+
+// Get all navigation tabs and content sections
+const navTabs = document.querySelectorAll('.nav-tab');
 const tabContents = document.querySelectorAll('.tab-content');
 
-tabButtons.forEach(button => {
+// Function to switch between tabs
+function switchTab(tabName) {
+    // Remove active class from all tabs and contents
+    navTabs.forEach(tab => tab.classList.remove('active'));
+    tabContents.forEach(content => content.classList.remove('active'));
+    
+    // Add active class to selected tab and content
+    const selectedTab = document.querySelector(`[data-tab="${tabName}"]`);
+    const selectedContent = document.getElementById(`${tabName}-tab`);
+    
+    if (selectedTab && selectedContent) {
+        selectedTab.classList.add('active');
+        selectedContent.classList.add('active');
+    }
+}
+
+// Add click event listeners to all navigation tabs
+navTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        const tabName = tab.getAttribute('data-tab');
+        switchTab(tabName);
+    });
+});
+
+// ====================================
+// CTA BUTTON - Navigate to Analyzer
+// ====================================
+const ctaButton = document.getElementById('analyze-cta');
+if (ctaButton) {
+    ctaButton.addEventListener('click', () => {
+        switchTab('analyzer');
+    });
+}
+
+// ====================================
+// ANALYZER FORM - Button Selection
+// ====================================
+
+// Handle CPU button selection
+const cpuButtons = document.querySelectorAll('#analyzer-tab .button-group:not(.storage-buttons) .option-button');
+const cpuInput = document.getElementById('cpu-input');
+
+cpuButtons.forEach(button => {
     button.addEventListener('click', () => {
-        const tabName = button.dataset.tab;
-        
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        tabContents.forEach(content => content.classList.remove('active'));
-        
-        button.classList.add('active');
-        document.getElementById(`${tabName}-tab`).classList.add('active');
+        // Remove selected class from all CPU buttons
+        cpuButtons.forEach(btn => btn.classList.remove('selected'));
+        // Add selected class to clicked button
+        button.classList.add('selected');
+        // Store value in hidden input
+        cpuInput.value = button.getAttribute('data-value');
     });
 });
 
-// Filter panel toggle
-const filterButton = document.getElementById('filterButton');
-const filterPanel = document.getElementById('filterPanel');
-const closeFilters = document.getElementById('closeFilters');
+// Handle Storage button selection
+const storageButtons = document.querySelectorAll('.storage-buttons .option-button');
+const storageInput = document.getElementById('storage-input');
 
-filterButton.addEventListener('click', () => {
-    filterPanel.classList.toggle('hidden');
+storageButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        // Remove selected class from all storage buttons
+        storageButtons.forEach(btn => btn.classList.remove('selected'));
+        // Add selected class to clicked button
+        button.classList.add('selected');
+        // Store value in hidden input
+        storageInput.value = button.getAttribute('data-value');
+    });
 });
 
-closeFilters.addEventListener('click', () => {
-    filterPanel.classList.add('hidden');
-});
+// ====================================
+// PERFORMANCE CALCULATION LOGIC
+// ====================================
 
-// Search functionality
-const searchInput = document.getElementById('searchInput');
-const searchResults = document.getElementById('searchResults');
-const loadingState = document.getElementById('loadingState');
-const emptyState = document.getElementById('emptyState');
+const analyzeButton = document.getElementById('analyze-button');
 
-const platformFilters = document.getElementById('platformFilters');
-const minPrice = document.getElementById('minPrice');
-const maxPrice = document.getElementById('maxPrice');
-const sortBy = document.getElementById('sortBy');
-
-// Platform URLs that link directly to search results
-const platforms = {
-    'Amazon': 'https://www.amazon.in/s?k=',
-    'Flipkart': 'https://www.flipkart.com/search?q=',
-    'Meesho': 'https://www.meesho.com/search?q=',
-    'Ajio': 'https://www.ajio.com/search/?text=',
-    'Myntra': 'https://www.myntra.com/',
-    'Snapdeal': 'https://www.snapdeal.com/search?keyword='
-};
-
-let searchTimeout;
-let allResults = [];
-let currentSearchQuery = '';
-
-// Generate mock product data with realistic prices from ₹50 to ₹50,000
-function generateMockResults(query) {
-    currentSearchQuery = query;
-    const results = [];
+analyzeButton.addEventListener('click', () => {
+    // Get form values
+    const ram = document.getElementById('ram-select').value;
+    const cpu = cpuInput.value;
+    const storage = storageInput.value;
+    const usage = document.getElementById('usage-select').value;
     
-    // More realistic and varied price ranges - from very cheap to expensive
-    const basePrices = [
-        49, 79, 99, 149, 199, 249, 299, 349, 399, 449, 499, 599, 699, 799, 899, 999,
-        1199, 1299, 1499, 1799, 1999, 2499, 2999, 3499, 3999, 4499, 4999, 5999,
-        6999, 7999, 8999, 9999, 12999, 14999, 19999, 24999, 29999, 39999, 49999
-    ];
-    
-    // Pick 5 random prices from the array
-    const randomBasePrices = [];
-    for (let i = 0; i < 5; i++) {
-        randomBasePrices.push(basePrices[Math.floor(Math.random() * basePrices.length)]);
+    // Validate all fields are filled
+    if (!ram || !cpu || !storage || !usage) {
+        alert('Please fill in all fields before analyzing.');
+        return;
     }
     
-    const baseProducts = [
-        { name: `${query} - Premium Edition`, basePrice: randomBasePrices[0] },
-        { name: `${query} - Standard`, basePrice: randomBasePrices[1] },
-        { name: `${query} - Pro Series`, basePrice: randomBasePrices[2] },
-        { name: `${query} - Compact`, basePrice: randomBasePrices[3] },
-        { name: `${query} - Deluxe`, basePrice: randomBasePrices[4] }
-    ];
+    // Calculate performance score
+    const results = calculatePerformance(parseInt(ram), cpu, storage, usage);
+    
+    // Display results
+    displayResults(results);
+});
 
-    Object.keys(platforms).forEach(platform => {
-        baseProducts.forEach(product => {
-            const discount = Math.floor(Math.random() * 40) + 5;
-            const price = Math.floor(product.basePrice * (1 - discount / 100));
-            
-            // Create proper search URL that takes user directly to search results
-            let searchUrl = platforms[platform] + encodeURIComponent(query);
-            
-            results.push({
-                id: `${platform}-${product.name}`,
-                name: product.name,
-                platform,
-                price,
-                originalPrice: product.basePrice,
-                discount,
-                rating: (4 + Math.random()).toFixed(1),
-                url: searchUrl
-            });
+// Main calculation function
+function calculatePerformance(ram, cpu, storage, usage) {
+    let score = 0;
+    
+    // RAM scoring (max 35 points)
+    if (ram >= 32) score += 35;
+    else if (ram >= 16) score += 28;
+    else if (ram >= 8) score += 20;
+    else if (ram >= 4) score += 12;
+    else score += 5;
+    
+    // CPU scoring (max 35 points)
+    if (cpu === 'high') score += 35;
+    else if (cpu === 'medium') score += 22;
+    else score += 10;
+    
+    // Storage scoring (max 20 points)
+    if (storage === 'ssd') score += 20;
+    else score += 8;
+    
+    // Usage multiplier
+    const usageMultipliers = {
+        browsing: 1.1,
+        coding: 1.0,
+        gaming: 0.95,
+        videoediting: 0.85
+    };
+    
+    score = Math.min(100, Math.round(score * usageMultipliers[usage]));
+    
+    // Determine capabilities based on specs
+    const canHandle = [];
+    const mightStruggle = [];
+    const notRecommended = [];
+    const upgrades = [];
+    
+    // High-end configuration
+    if (ram >= 16 && cpu === 'high' && storage === 'ssd') {
+        canHandle.push('Heavy multitasking with 20+ browser tabs');
+        canHandle.push('4K video streaming without buffering');
+        canHandle.push('Professional photo editing (Photoshop, Lightroom)');
+        
+        if (usage === 'gaming') {
+            canHandle.push('Modern AAA games at high/ultra settings');
+            canHandle.push('VR gaming experiences');
+        }
+        
+        if (usage === 'videoediting') {
+            canHandle.push('4K video editing with multiple layers');
+            canHandle.push('Real-time color grading and effects');
+        }
+        
+        if (usage === 'coding') {
+            canHandle.push('Running multiple Docker containers');
+            canHandle.push('Large-scale IDE projects with IntelliSense');
+        }
+    }
+    // Mid-range configuration
+    else if (ram >= 8 && cpu === 'medium') {
+        canHandle.push('Smooth web browsing with 10+ tabs');
+        canHandle.push('Microsoft Office and productivity apps');
+        canHandle.push('Light photo editing');
+        canHandle.push('1080p video streaming');
+        
+        if (usage === 'gaming') {
+            canHandle.push('Esports titles (Valorant, CS:GO, League)');
+            canHandle.push('Games from 2015-2020 at medium settings');
+            mightStruggle.push('Latest AAA games at ultra settings');
+            mightStruggle.push('Ray tracing enabled games');
+        }
+        
+        if (usage === 'videoediting') {
+            canHandle.push('1080p video editing');
+            mightStruggle.push('4K video editing');
+            mightStruggle.push('Complex effects and transitions');
+        }
+        
+        if (usage === 'coding') {
+            canHandle.push('Web development (VS Code, Node.js)');
+            canHandle.push('Basic backend development');
+            mightStruggle.push('Heavy virtualization or Android Studio');
+        }
+    }
+    // Low-end configuration
+    else {
+        canHandle.push('Basic web browsing (3-5 tabs)');
+        canHandle.push('Email and document editing');
+        canHandle.push('Music and podcast streaming');
+        
+        mightStruggle.push('Multiple browser tabs (10+)');
+        mightStruggle.push('HD video streaming');
+        mightStruggle.push('Basic photo editing');
+        
+        if (usage === 'gaming') {
+            notRecommended.push('Modern gaming (2020+)');
+            notRecommended.push('VR experiences');
+            mightStruggle.push('Older casual games');
+        }
+        
+        if (usage === 'videoediting') {
+            notRecommended.push('Video editing of any kind');
+            notRecommended.push('Content creation workflows');
+        }
+        
+        if (usage === 'coding') {
+            mightStruggle.push('Running local development servers');
+            mightStruggle.push('Using modern IDEs');
+            notRecommended.push('Mobile app development');
+        }
+    }
+    
+    // Generate upgrade suggestions
+    if (storage === 'hdd') {
+        upgrades.push('Upgrade to SSD - this is the #1 best upgrade for instant speed boost');
+    }
+    
+    if (ram < 8 && usage !== 'browsing') {
+        upgrades.push('Upgrade to at least 8GB RAM for smoother multitasking');
+    }
+    
+    if (ram < 16 && (usage === 'videoediting' || usage === 'gaming')) {
+        upgrades.push(`Consider 16GB RAM for optimal ${usage === 'videoediting' ? 'video editing' : 'gaming'} experience`);
+    }
+    
+    if (cpu === 'low' && usage !== 'browsing') {
+        upgrades.push('CPU upgrade would provide significant performance improvements');
+    }
+    
+    if (ram >= 32 && cpu === 'high' && storage === 'ssd') {
+        upgrades.push('Your setup is excellent! Consider a GPU upgrade if gaming/rendering');
+    }
+    
+    return {
+        score,
+        canHandle,
+        mightStruggle,
+        notRecommended,
+        upgrades
+    };
+}
+
+// ====================================
+// DISPLAY RESULTS FUNCTION
+// ====================================
+
+function displayResults(results) {
+    // Show results section
+    const resultsSection = document.getElementById('results-section');
+    resultsSection.style.display = 'block';
+    
+    // Scroll to results smoothly
+    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    
+    // Animate score
+    animateScore(results.score);
+    
+    // Update score label
+    const scoreLabel = document.getElementById('score-label');
+    if (results.score >= 80) {
+        scoreLabel.textContent = 'Excellent performance - Your PC is powerful!';
+    } else if (results.score >= 60) {
+        scoreLabel.textContent = 'Good performance - Handles most tasks well';
+    } else if (results.score >= 40) {
+        scoreLabel.textContent = 'Fair performance - Suitable for basic tasks';
+    } else {
+        scoreLabel.textContent = 'Limited performance - Consider upgrades';
+    }
+    
+    // Display capability lists
+    displayList('can-handle', results.canHandle);
+    displayList('might-struggle', results.mightStruggle);
+    displayList('not-recommended', results.notRecommended);
+    displayList('upgrades', results.upgrades);
+    
+    // Add SVG gradient if not already present
+    addSVGGradient();
+}
+
+// Function to display result lists
+function displayList(type, items) {
+    const card = document.getElementById(`${type}-card`);
+    const list = document.getElementById(`${type}-list`);
+    
+    if (items.length > 0) {
+        card.style.display = 'block';
+        list.innerHTML = '';
+        items.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            list.appendChild(li);
         });
-    });
-
-    return results;
+    } else {
+        card.style.display = 'none';
+    }
 }
 
-// Apply filters and sorting
-function filterAndSortResults(results) {
-    let filtered = [...results];
+// ====================================
+// SCORE ANIMATION
+// ====================================
 
-    // Platform filter
-    const selectedPlatforms = Array.from(platformFilters.querySelectorAll('input:checked'))
-        .map(input => input.value);
+function animateScore(finalScore) {
+    const scoreNumber = document.getElementById('score-number');
+    const scoreProgress = document.getElementById('score-progress');
     
-    if (selectedPlatforms.length > 0) {
-        filtered = filtered.filter(item => selectedPlatforms.includes(item.platform));
-    }
-
-    // Price range filter
-    const min = parseFloat(minPrice.value);
-    const max = parseFloat(maxPrice.value);
+    // Calculate circle progress (circumference = 2 * π * r = 2 * π * 80 = 502.4)
+    const circumference = 502.4;
+    const offset = circumference - (finalScore / 100) * circumference;
     
-    if (!isNaN(min)) {
-        filtered = filtered.filter(item => item.price >= min);
-    }
-    if (!isNaN(max)) {
-        filtered = filtered.filter(item => item.price <= max);
-    }
-
-    // Sorting
-    const sortValue = sortBy.value;
-    if (sortValue === 'price-low') {
-        filtered.sort((a, b) => a.price - b.price);
-    } else if (sortValue === 'price-high') {
-        filtered.sort((a, b) => b.price - a.price);
-    } else if (sortValue === 'discount') {
-        filtered.sort((a, b) => b.discount - a.discount);
-    }
-
-    return filtered;
-}
-
-// Render search results
-function renderSearchResults(results) {
-    if (results.length === 0) {
-        searchResults.innerHTML = '';
-        emptyState.style.display = 'block';
-        return;
-    }
-
-    emptyState.style.display = 'none';
+    // Animate number from 0 to final score
+    let currentScore = 0;
+    const increment = finalScore / 50; // 50 steps for smooth animation
+    const duration = 1000; // 1 second
+    const stepTime = duration / 50;
     
-    searchResults.innerHTML = results.map(product => `
-        <div class="product-card" onclick="window.open('${product.url}', '_blank')">
-            <div class="platform-badge">
-                <span class="product-platform">${product.platform}</span>
-                <svg class="platform-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                </svg>
-            </div>
-            <h3 class="product-name">${product.name}</h3>
-            <div class="product-pricing">
-                <span class="product-price">₹${product.price.toLocaleString()}</span>
-                <span class="product-original-price">₹${product.originalPrice.toLocaleString()}</span>
-            </div>
-            <span class="product-discount">${product.discount}% OFF</span>
-            <div class="product-footer">
-                <div class="product-rating">
-                    <span class="rating-star">★</span>
-                    <span>${product.rating}</span>
-                    <span class="rating-count">(${Math.floor(Math.random() * 5000) + 500})</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Search function
-function performSearch(query) {
-    if (!query.trim()) {
-        allResults = [];
-        searchResults.innerHTML = '';
-        emptyState.style.display = 'block';
-        loadingState.classList.add('hidden');
-        return;
-    }
-
-    loadingState.classList.remove('hidden');
-    emptyState.style.display = 'none';
-    searchResults.innerHTML = '';
-
-    // Simulate API call with realistic delay
+    const numberInterval = setInterval(() => {
+        currentScore += increment;
+        if (currentScore >= finalScore) {
+            currentScore = finalScore;
+            clearInterval(numberInterval);
+        }
+        scoreNumber.textContent = Math.round(currentScore);
+    }, stepTime);
+    
+    // Animate circle progress
     setTimeout(() => {
-        allResults = generateMockResults(query);
-        const filteredResults = filterAndSortResults(allResults);
-        renderSearchResults(filteredResults);
-        loadingState.classList.add('hidden');
-    }, 600);
+        scoreProgress.style.strokeDashoffset = offset;
+    }, 100);
 }
 
-// Search input handler with debounce
-searchInput.addEventListener('input', (e) => {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-        performSearch(e.target.value);
-    }, 300);
-});
+// ====================================
+// ADD SVG GRADIENT FOR SCORE CIRCLE
+// ====================================
 
-// Filter change handlers
-platformFilters.addEventListener('change', () => {
-    if (allResults.length > 0) {
-        const filteredResults = filterAndSortResults(allResults);
-        renderSearchResults(filteredResults);
+function addSVGGradient() {
+    const svg = document.querySelector('.score-circle');
+    if (!svg.querySelector('defs')) {
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+        gradient.setAttribute('id', 'scoreGradient');
+        gradient.setAttribute('x1', '0%');
+        gradient.setAttribute('y1', '0%');
+        gradient.setAttribute('x2', '100%');
+        gradient.setAttribute('y2', '0%');
+        
+        const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop1.setAttribute('offset', '0%');
+        stop1.setAttribute('style', 'stop-color:#06b6d4');
+        
+        const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop2.setAttribute('offset', '100%');
+        stop2.setAttribute('style', 'stop-color:#a855f7');
+        
+        gradient.appendChild(stop1);
+        gradient.appendChild(stop2);
+        defs.appendChild(gradient);
+        svg.insertBefore(defs, svg.firstChild);
     }
-});
+}
 
-minPrice.addEventListener('input', () => {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-        if (allResults.length > 0) {
-            const filteredResults = filterAndSortResults(allResults);
-            renderSearchResults(filteredResults);
-        }
-    }, 500);
-});
+// ====================================
+// INITIALIZATION
+// ====================================
 
-maxPrice.addEventListener('input', () => {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-        if (allResults.length > 0) {
-            const filteredResults = filterAndSortResults(allResults);
-            renderSearchResults(filteredResults);
-        }
-    }, 500);
-});
-
-sortBy.addEventListener('change', () => {
-    if (allResults.length > 0) {
-        const filteredResults = filterAndSortResults(allResults);
-        renderSearchResults(filteredResults);
-    }
-});
-
-// Amazon Sign In functionality
-const amazonSignIn = document.getElementById('amazonSignIn');
-const signInState = document.getElementById('signInState');
-const transactionsList = document.getElementById('transactionsList');
-const transactionsContent = document.getElementById('transactionsContent');
-const signOutButton = document.getElementById('signOutButton');
-
-// Mock transaction data
-const mockTransactions = [
-    { id: 'AMZ001', date: '2025-01-20', item: 'Wireless Headphones', amount: 2499, status: 'Delivered' },
-    { id: 'AMZ002', date: '2025-01-15', item: 'Smart Watch', amount: 4999, status: 'Delivered' },
-    { id: 'AMZ003', date: '2025-01-10', item: 'Bluetooth Speaker', amount: 1899, status: 'In Transit' },
-    { id: 'AMZ004', date: '2025-01-05', item: 'Phone Case', amount: 499, status: 'Delivered' },
-    { id: 'AMZ005', date: '2024-12-28', item: 'USB Cable', amount: 299, status: 'Delivered' },
-    { id: 'AMZ006', date: '2024-12-20', item: 'Laptop Bag', amount: 1599, status: 'Delivered' },
-    { id: 'AMZ007', date: '2024-12-15', item: 'Wireless Mouse', amount: 899, status: 'Delivered' },
-    { id: 'AMZ008', date: '2024-12-10', item: 'Power Bank', amount: 1299, status: 'Delivered' },
-    { id: 'AMZ009', date: '2024-12-05', item: 'Screen Protector', amount: 199, status: 'Delivered' }
-];
-
-amazonSignIn.addEventListener('click', () => {
-    // Simulate Amazon OAuth sign in
-    signInState.style.display = 'none';
-    transactionsList.classList.remove('hidden');
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Set home tab as active on load
+    switchTab('home');
     
-    // Render transactions with animation
-    transactionsContent.innerHTML = mockTransactions.map((transaction, index) => `
-        <div class="transaction-card" style="animation-delay: ${index * 0.05}s">
-            <div class="transaction-header">
-                <span class="transaction-id">${transaction.id}</span>
-                <span class="transaction-status ${transaction.status === 'Delivered' ? 'delivered' : 'transit'}">
-                    ${transaction.status}
-                </span>
-            </div>
-            <h3 class="transaction-item">${transaction.item}</h3>
-            <div class="transaction-footer">
-                <span class="transaction-date">${new Date(transaction.date).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                <span class="transaction-amount">₹${transaction.amount.toLocaleString()}</span>
-            </div>
-        </div>
-    `).join('');
-});
-
-signOutButton.addEventListener('click', () => {
-    // Sign out and return to sign in screen
-    transactionsList.classList.add('hidden');
-    signInState.style.display = 'flex';
-    transactionsContent.innerHTML = '';
+    // Add gradient to score SVG
+    addSVGGradient();
 });
