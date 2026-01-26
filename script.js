@@ -38,26 +38,54 @@ const minPrice = document.getElementById('minPrice');
 const maxPrice = document.getElementById('maxPrice');
 const sortBy = document.getElementById('sortBy');
 
-const platforms = ['Amazon', 'Flipkart', 'Meesho', 'Ajio', 'Myntra', 'Snapdeal'];
+// Platform URLs that link directly to search results
+const platforms = {
+    'Amazon': 'https://www.amazon.in/s?k=',
+    'Flipkart': 'https://www.flipkart.com/search?q=',
+    'Meesho': 'https://www.meesho.com/search?q=',
+    'Ajio': 'https://www.ajio.com/search/?text=',
+    'Myntra': 'https://www.myntra.com/',
+    'Snapdeal': 'https://www.snapdeal.com/search?keyword='
+};
 
 let searchTimeout;
 let allResults = [];
+let currentSearchQuery = '';
 
-// Generate mock product data
+// Generate mock product data with realistic prices from ₹50 to ₹50,000
 function generateMockResults(query) {
+    currentSearchQuery = query;
     const results = [];
+    
+    // More realistic and varied price ranges - from very cheap to expensive
+    const basePrices = [
+        49, 79, 99, 149, 199, 249, 299, 349, 399, 449, 499, 599, 699, 799, 899, 999,
+        1199, 1299, 1499, 1799, 1999, 2499, 2999, 3499, 3999, 4499, 4999, 5999,
+        6999, 7999, 8999, 9999, 12999, 14999, 19999, 24999, 29999, 39999, 49999
+    ];
+    
+    // Pick 5 random prices from the array
+    const randomBasePrices = [];
+    for (let i = 0; i < 5; i++) {
+        randomBasePrices.push(basePrices[Math.floor(Math.random() * basePrices.length)]);
+    }
+    
     const baseProducts = [
-        { name: `${query} - Premium Edition`, basePrice: 2999 },
-        { name: `${query} - Standard`, basePrice: 1999 },
-        { name: `${query} - Pro Series`, basePrice: 4499 },
-        { name: `${query} - Compact`, basePrice: 1499 },
-        { name: `${query} - Deluxe`, basePrice: 3499 }
+        { name: `${query} - Premium Edition`, basePrice: randomBasePrices[0] },
+        { name: `${query} - Standard`, basePrice: randomBasePrices[1] },
+        { name: `${query} - Pro Series`, basePrice: randomBasePrices[2] },
+        { name: `${query} - Compact`, basePrice: randomBasePrices[3] },
+        { name: `${query} - Deluxe`, basePrice: randomBasePrices[4] }
     ];
 
-    platforms.forEach(platform => {
+    Object.keys(platforms).forEach(platform => {
         baseProducts.forEach(product => {
             const discount = Math.floor(Math.random() * 40) + 5;
             const price = Math.floor(product.basePrice * (1 - discount / 100));
+            
+            // Create proper search URL that takes user directly to search results
+            let searchUrl = platforms[platform] + encodeURIComponent(query);
+            
             results.push({
                 id: `${platform}-${product.name}`,
                 name: product.name,
@@ -66,7 +94,7 @@ function generateMockResults(query) {
                 originalPrice: product.basePrice,
                 discount,
                 rating: (4 + Math.random()).toFixed(1),
-                url: `https://${platform.toLowerCase()}.com/search?q=${encodeURIComponent(query)}`
+                url: searchUrl
             });
         });
     });
@@ -122,26 +150,26 @@ function renderSearchResults(results) {
     
     searchResults.innerHTML = results.map(product => `
         <div class="product-card" onclick="window.open('${product.url}', '_blank')">
-            <span class="product-platform">${product.platform}</span>
+            <div class="platform-badge">
+                <span class="product-platform">${product.platform}</span>
+                <svg class="platform-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+            </div>
             <h3 class="product-name">${product.name}</h3>
             <div class="product-pricing">
                 <span class="product-price">₹${product.price.toLocaleString()}</span>
                 <span class="product-original-price">₹${product.originalPrice.toLocaleString()}</span>
-                <span class="product-discount">${product.discount}% off</span>
             </div>
+            <span class="product-discount">${product.discount}% OFF</span>
             <div class="product-footer">
                 <div class="product-rating">
                     <span class="rating-star">★</span>
                     <span>${product.rating}</span>
+                    <span class="rating-count">(${Math.floor(Math.random() * 5000) + 500})</span>
                 </div>
-                <a href="${product.url}" class="view-product" target="_blank" onclick="event.stopPropagation()">
-                    View Product
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                </a>
             </div>
         </div>
     `).join('');
@@ -161,16 +189,16 @@ function performSearch(query) {
     emptyState.style.display = 'none';
     searchResults.innerHTML = '';
 
-    // Simulate API call
+    // Simulate API call with realistic delay
     setTimeout(() => {
         allResults = generateMockResults(query);
         const filteredResults = filterAndSortResults(allResults);
         renderSearchResults(filteredResults);
         loadingState.classList.add('hidden');
-    }, 800);
+    }, 600);
 }
 
-// Search input handler
+// Search input handler with debounce
 searchInput.addEventListener('input', (e) => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
@@ -187,17 +215,23 @@ platformFilters.addEventListener('change', () => {
 });
 
 minPrice.addEventListener('input', () => {
-    if (allResults.length > 0) {
-        const filteredResults = filterAndSortResults(allResults);
-        renderSearchResults(filteredResults);
-    }
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        if (allResults.length > 0) {
+            const filteredResults = filterAndSortResults(allResults);
+            renderSearchResults(filteredResults);
+        }
+    }, 500);
 });
 
 maxPrice.addEventListener('input', () => {
-    if (allResults.length > 0) {
-        const filteredResults = filterAndSortResults(allResults);
-        renderSearchResults(filteredResults);
-    }
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        if (allResults.length > 0) {
+            const filteredResults = filterAndSortResults(allResults);
+            renderSearchResults(filteredResults);
+        }
+    }, 500);
 });
 
 sortBy.addEventListener('change', () => {
@@ -207,13 +241,14 @@ sortBy.addEventListener('change', () => {
     }
 });
 
-// Amazon Sign In
+// Amazon Sign In functionality
 const amazonSignIn = document.getElementById('amazonSignIn');
 const signInState = document.getElementById('signInState');
 const transactionsList = document.getElementById('transactionsList');
 const transactionsContent = document.getElementById('transactionsContent');
 const signOutButton = document.getElementById('signOutButton');
 
+// Mock transaction data
 const mockTransactions = [
     { id: 'AMZ001', date: '2025-01-20', item: 'Wireless Headphones', amount: 2499, status: 'Delivered' },
     { id: 'AMZ002', date: '2025-01-15', item: 'Smart Watch', amount: 4999, status: 'Delivered' },
@@ -221,17 +256,19 @@ const mockTransactions = [
     { id: 'AMZ004', date: '2025-01-05', item: 'Phone Case', amount: 499, status: 'Delivered' },
     { id: 'AMZ005', date: '2024-12-28', item: 'USB Cable', amount: 299, status: 'Delivered' },
     { id: 'AMZ006', date: '2024-12-20', item: 'Laptop Bag', amount: 1599, status: 'Delivered' },
-    { id: 'AMZ007', date: '2024-12-15', item: 'Wireless Mouse', amount: 899, status: 'Delivered' }
+    { id: 'AMZ007', date: '2024-12-15', item: 'Wireless Mouse', amount: 899, status: 'Delivered' },
+    { id: 'AMZ008', date: '2024-12-10', item: 'Power Bank', amount: 1299, status: 'Delivered' },
+    { id: 'AMZ009', date: '2024-12-05', item: 'Screen Protector', amount: 199, status: 'Delivered' }
 ];
 
 amazonSignIn.addEventListener('click', () => {
-    // Simulate sign in
+    // Simulate Amazon OAuth sign in
     signInState.style.display = 'none';
     transactionsList.classList.remove('hidden');
     
-    // Render transactions
-    transactionsContent.innerHTML = mockTransactions.map(transaction => `
-        <div class="transaction-card">
+    // Render transactions with animation
+    transactionsContent.innerHTML = mockTransactions.map((transaction, index) => `
+        <div class="transaction-card" style="animation-delay: ${index * 0.05}s">
             <div class="transaction-header">
                 <span class="transaction-id">${transaction.id}</span>
                 <span class="transaction-status ${transaction.status === 'Delivered' ? 'delivered' : 'transit'}">
@@ -248,6 +285,7 @@ amazonSignIn.addEventListener('click', () => {
 });
 
 signOutButton.addEventListener('click', () => {
+    // Sign out and return to sign in screen
     transactionsList.classList.add('hidden');
     signInState.style.display = 'flex';
     transactionsContent.innerHTML = '';
