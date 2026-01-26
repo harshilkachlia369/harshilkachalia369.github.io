@@ -3,165 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luxe Price Tracker</title>
+    <title>SpecWise - Know What Your Computer Can Actually Do</title>
+    
+    <!-- Favicon (inline SVG) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2306b6d4'/%3E%3Cstop offset='100%25' style='stop-color:%23a855f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z' fill='url(%23g)' stroke='%2306b6d4' stroke-width='3'/%3E%3Cpath d='M50 25 L75 38 L75 62 L50 75 L25 62 L25 38 Z' fill='%231e293b'/%3E%3Cpath d='M50 35 L65 43 L65 57 L50 65 L35 57 L35 43 Z' fill='url(%23g)'/%3E%3C/svg%3E">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <h1 class="logo">Luxe Price Tracker</h1>
-        </div>
-    </header>
+    <!-- Subtle circuit board background (SVG pattern) -->
+    <div class="circuit-background"></div>
+    
+    <!-- Gradient orbs for depth -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
-    <!-- Navigation Tabs -->
-    <div class="container">
-        <div class="tabs">
-            <button class="tab-button active" data-tab="search">Search Products</button>
-            <button class="tab-button" data-tab="transactions">Amazon Transactions</button>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <!-- Logo icon (lightning bolt SVG) -->
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
+                </svg>
+                <span class="logo-text">SpecWise</span>
+            </div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="home">Home</button>
+                <button class="nav-tab" data-tab="analyzer">Analyzer</button>
+                <button class="nav-tab" data-tab="learn">Learn</button>
+            </div>
         </div>
-    </div>
+    </nav>
 
-    <!-- Main Content -->
-    <main class="container main-content">
-        <!-- Search Tab -->
-        <div id="search-tab" class="tab-content active">
-            <!-- Search Bar with Filter -->
-            <div class="search-container">
-                <div class="search-bar">
-                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
+    <!-- Main Content Container -->
+    <main class="main-content">
+        
+        <!-- HOME TAB -->
+        <section id="home-tab" class="tab-content active">
+            <div class="hero-section">
+                <h1 class="hero-title">
+                    <span class="gradient-text">Stop Guessing.</span>
+                    <br>
+                    <span class="white-text">Know Your PC.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    SpecWise analyzes your computer's hardware and tells you exactly what it can handle—in simple, human language. No tech jargon, just clarity.
+                </p>
+                <button class="cta-button" id="analyze-cta">
+                    <span>Analyze My PC</span>
+                    <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
-                    <input type="text" id="searchInput" placeholder="Search for any product..." class="search-input">
-                </div>
-                <button id="filterButton" class="filter-button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="4" y1="21" x2="4" y2="14"></line>
-                        <line x1="4" y1="10" x2="4" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12" y2="3"></line>
-                        <line x1="20" y1="21" x2="20" y2="16"></line>
-                        <line x1="20" y1="12" x2="20" y2="3"></line>
-                        <line x1="1" y1="14" x2="7" y2="14"></line>
-                        <line x1="9" y1="8" x2="15" y2="8"></line>
-                        <line x1="17" y1="16" x2="23" y2="16"></line>
-                    </svg>
-                    Filters
                 </button>
             </div>
 
-            <!-- Filter Panel -->
-            <div id="filterPanel" class="filter-panel hidden">
-                <div class="filter-header">
-                    <h3>Filters</h3>
-                    <button id="closeFilters" class="close-button">×</button>
+            <!-- Feature Cards -->
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                    <h3 class="feature-title">Performance Score</h3>
+                    <p class="feature-desc">Get a clear 0-100 rating of your PC capabilities</p>
                 </div>
-                <div class="filter-content">
-                    <!-- Platforms -->
-                    <div class="filter-section">
-                        <label class="filter-label">Platforms</label>
-                        <div class="checkbox-group" id="platformFilters">
-                            <label class="checkbox-label">
-                                <input type="checkbox" value="Amazon"> Amazon
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" value="Flipkart"> Flipkart
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" value="Meesho"> Meesho
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" value="Ajio"> Ajio
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" value="Myntra"> Myntra
-                            </label>
-                            <label class="checkbox-label">
-                                <input type="checkbox" value="Snapdeal"> Snapdeal
-                            </label>
-                        </div>
-                    </div>
+                <div class="feature-card">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="4" y="4" width="16" height="16" rx="2"/>
+                        <rect x="9" y="9" width="6" height="6"/>
+                        <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3"/>
+                    </svg>
+                    <h3 class="feature-title">Smart Analysis</h3>
+                    <p class="feature-desc">Understand what tasks your hardware can handle</p>
+                </div>
+                <div class="feature-card">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
+                    </svg>
+                    <h3 class="feature-title">Upgrade Tips</h3>
+                    <p class="feature-desc">Receive personalized suggestions to boost performance</p>
+                </div>
+            </div>
+        </section>
 
-                    <!-- Price Range -->
-                    <div class="filter-section">
-                        <label class="filter-label">Price Range (₹)</label>
-                        <div class="price-inputs">
-                            <input type="number" id="minPrice" placeholder="Min" class="price-input">
-                            <input type="number" id="maxPrice" placeholder="Max" class="price-input">
-                        </div>
-                    </div>
-
-                    <!-- Sort By -->
-                    <div class="filter-section">
-                        <label class="filter-label">Sort By</label>
-                        <select id="sortBy" class="sort-select">
-                            <option value="relevance">Relevance</option>
-                            <option value="price-low">Price: Low to High</option>
-                            <option value="price-high">Price: High to Low</option>
-                            <option value="discount">Highest Discount</option>
+        <!-- ANALYZER TAB -->
+        <section id="analyzer-tab" class="tab-content">
+            <h2 class="section-title">PC Performance Analyzer</h2>
+            
+            <div class="analyzer-container">
+                <div class="analyzer-form">
+                    <!-- RAM Selection -->
+                    <div class="form-group">
+                        <label class="form-label">RAM (Memory)</label>
+                        <select id="ram-select" class="form-select">
+                            <option value="">Select RAM</option>
+                            <option value="2">2GB</option>
+                            <option value="4">4GB</option>
+                            <option value="8">8GB</option>
+                            <option value="16">16GB</option>
+                            <option value="32">32GB</option>
                         </select>
                     </div>
-                </div>
-            </div>
 
-            <!-- Loading State -->
-            <div id="loadingState" class="loading-state hidden">
-                <div class="spinner"></div>
-                <p>Searching across platforms...</p>
-            </div>
+                    <!-- CPU Selection -->
+                    <div class="form-group">
+                        <label class="form-label">CPU Level</label>
+                        <div class="button-group">
+                            <button type="button" class="option-button" data-value="low">
+                                <span class="option-label">Low</span>
+                                <span class="option-desc">Basic processors</span>
+                            </button>
+                            <button type="button" class="option-button" data-value="medium">
+                                <span class="option-label">Medium</span>
+                                <span class="option-desc">Mid-range CPUs</span>
+                            </button>
+                            <button type="button" class="option-button" data-value="high">
+                                <span class="option-label">High</span>
+                                <span class="option-desc">Premium chips</span>
+                            </button>
+                        </div>
+                        <input type="hidden" id="cpu-input">
+                    </div>
 
-            <!-- Search Results -->
-            <div id="searchResults" class="search-results"></div>
+                    <!-- Storage Selection -->
+                    <div class="form-group">
+                        <label class="form-label">Storage Type</label>
+                        <div class="button-group storage-buttons">
+                            <button type="button" class="option-button" data-value="hdd">
+                                <span class="option-label">HDD</span>
+                                <span class="option-desc">Traditional hard drive</span>
+                            </button>
+                            <button type="button" class="option-button" data-value="ssd">
+                                <span class="option-label">SSD</span>
+                                <span class="option-desc">Solid state drive</span>
+                            </button>
+                        </div>
+                        <input type="hidden" id="storage-input">
+                    </div>
 
-            <!-- Empty State -->
-            <div id="emptyState" class="empty-state">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-                <p>Search for products to compare prices</p>
-            </div>
-        </div>
+                    <!-- Usage Selection -->
+                    <div class="form-group">
+                        <label class="form-label">Primary Usage</label>
+                        <select id="usage-select" class="form-select">
+                            <option value="">Select usage</option>
+                            <option value="browsing">Browsing</option>
+                            <option value="coding">Coding</option>
+                            <option value="gaming">Gaming</option>
+                            <option value="videoediting">Video Editing</option>
+                        </select>
+                    </div>
 
-        <!-- Amazon Transactions Tab -->
-        <div id="transactions-tab" class="tab-content">
-            <!-- Sign In State -->
-            <div id="signInState" class="sign-in-state">
-                <div class="sign-in-card">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    <h2>Sign in to Amazon</h2>
-                    <p>View your transaction history and track orders</p>
-                    <button id="amazonSignIn" class="sign-in-button">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                            <polyline points="10 17 15 12 10 7"></polyline>
-                            <line x1="15" y1="12" x2="3" y2="12"></line>
-                        </svg>
-                        Sign in with Amazon
+                    <button type="button" class="analyze-button" id="analyze-button">
+                        Analyze Performance
                     </button>
                 </div>
+
+                <!-- Results Section (Hidden by default) -->
+                <div id="results-section" class="results-section" style="display: none;">
+                    <!-- Performance Score -->
+                    <div class="score-card">
+                        <h3 class="score-title">Performance Score</h3>
+                        <div class="score-circle-container">
+                            <svg class="score-circle" viewBox="0 0 200 200">
+                                <circle class="score-bg" cx="100" cy="100" r="80"/>
+                                <circle class="score-fill" cx="100" cy="100" r="80" id="score-progress"/>
+                            </svg>
+                            <div class="score-number" id="score-number">0</div>
+                        </div>
+                        <p class="score-label" id="score-label">Calculating...</p>
+                    </div>
+
+                    <!-- Can Handle -->
+                    <div id="can-handle-card" class="result-card" style="display: none;">
+                        <h3 class="result-title">
+                            <svg class="result-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                            Your PC Can Handle
+                        </h3>
+                        <ul class="result-list" id="can-handle-list"></ul>
+                    </div>
+
+                    <!-- Might Struggle -->
+                    <div id="might-struggle-card" class="result-card" style="display: none;">
+                        <h3 class="result-title">
+                            <svg class="result-icon warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                            Might Struggle With
+                        </h3>
+                        <ul class="result-list" id="might-struggle-list"></ul>
+                    </div>
+
+                    <!-- Not Recommended -->
+                    <div id="not-recommended-card" class="result-card" style="display: none;">
+                        <h3 class="result-title">
+                            <svg class="result-icon error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="15" y1="9" x2="9" y2="15"/>
+                                <line x1="9" y1="9" x2="15" y2="15"/>
+                            </svg>
+                            Not Recommended
+                        </h3>
+                        <ul class="result-list" id="not-recommended-list"></ul>
+                    </div>
+
+                    <!-- Upgrade Suggestions -->
+                    <div id="upgrades-card" class="result-card upgrade-card" style="display: none;">
+                        <h3 class="result-title">
+                            <svg class="result-icon upgrade" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
+                            </svg>
+                            Upgrade Suggestions
+                        </h3>
+                        <ul class="result-list" id="upgrades-list"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LEARN TAB -->
+        <section id="learn-tab" class="tab-content">
+            <h2 class="section-title">Understanding Your PC</h2>
+            
+            <div class="learn-grid">
+                <div class="learn-card">
+                    <div class="learn-emoji">🧠</div>
+                    <h3 class="learn-title">What is RAM?</h3>
+                    <p class="learn-text">
+                        RAM (Random Access Memory) is your computer's short-term memory. It temporarily stores data that your PC is actively using. More RAM means you can run more programs simultaneously without slowdowns. Think of it like your desk—a bigger desk lets you spread out more work at once.
+                    </p>
+                </div>
+                <div class="learn-card">
+                    <div class="learn-emoji">⚡</div>
+                    <h3 class="learn-title">What is CPU?</h3>
+                    <p class="learn-text">
+                        The CPU (Central Processing Unit) is the brain of your computer. It processes all instructions and calculations. A faster CPU means quicker performance for everything from opening apps to rendering videos. It's like having a faster worker completing tasks.
+                    </p>
+                </div>
+                <div class="learn-card">
+                    <div class="learn-emoji">💾</div>
+                    <h3 class="learn-title">Why SSD Matters</h3>
+                    <p class="learn-text">
+                        SSDs (Solid State Drives) are much faster than traditional HDDs. They make your computer boot up faster, load apps quicker, and feel more responsive overall. Switching from HDD to SSD is often the single best upgrade you can make—it's like upgrading from a bicycle to a sports car.
+                    </p>
+                </div>
             </div>
 
-            <!-- Transactions List -->
-            <div id="transactionsList" class="transactions-container hidden">
-                <div class="transactions-header">
-                    <h2>Transaction History</h2>
-                    <button id="signOutButton" class="sign-out-button">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                            <polyline points="16 17 21 12 16 7"></polyline>
-                            <line x1="21" y1="12" x2="9" y2="12"></line>
-                        </svg>
-                        Sign Out
-                    </button>
-                </div>
-                <div id="transactionsContent" class="transactions-list"></div>
+            <div class="about-section">
+                <h3 class="about-title">About SpecWise</h3>
+                <p class="about-text">
+                    SpecWise was created to help everyday users understand their computer's capabilities without needing a degree in computer science. We believe technology should be accessible to everyone, and knowing what your PC can do is the first step to getting the most out of it. Whether you're considering an upgrade or just curious about your current setup, SpecWise gives you clear, honest answers.
+                </p>
             </div>
-        </div>
+        </section>
+
     </main>
 
     <script src="script.js"></script>
