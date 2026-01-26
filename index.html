@@ -3,10 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
     <title>SpecWise - Know What Your Computer Can Actually Do</title>
+    <meta name="title" content="SpecWise - Know What Your Computer Can Actually Do">
+    <meta name="description" content="Free PC analyzer that tells you exactly what your computer can handle based on RAM, CPU, and storage. Get a performance score, upgrade suggestions, and realistic task recommendations in simple language.">
+    <meta name="keywords" content="PC analyzer, computer specs checker, RAM test, CPU performance, system requirements checker, PC upgrade guide, computer analysis tool, hardware analyzer, performance score, gaming PC checker, coding PC requirements">
+    <meta name="author" content="SpecWise">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://specwise.com/">
+    <meta property="og:title" content="SpecWise - Know What Your Computer Can Actually Do">
+    <meta property="og:description" content="Free PC analyzer that tells you what your computer can handle. Get instant performance scores and upgrade recommendations.">
+    <meta property="og:image" content="https://specwise.com/preview.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://specwise.com/">
+    <meta property="twitter:title" content="SpecWise - Know What Your Computer Can Actually Do">
+    <meta property="twitter:description" content="Free PC analyzer that tells you what your computer can handle. Get instant performance scores and upgrade recommendations.">
+    <meta property="twitter:image" content="https://specwise.com/preview.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://specwise.com/">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#06b6d4">
+    <meta name="msapplication-TileColor" content="#06b6d4">
     
     <!-- Favicon (inline SVG) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2306b6d4'/%3E%3Cstop offset='100%25' style='stop-color:%23a855f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z' fill='url(%23g)' stroke='%2306b6d4' stroke-width='3'/%3E%3Cpath d='M50 25 L75 38 L75 62 L50 75 L25 62 L25 38 Z' fill='%231e293b'/%3E%3Cpath d='M50 35 L65 43 L65 57 L50 65 L35 57 L35 43 Z' fill='url(%23g)'/%3E%3C/svg%3E">
+    
+    <!-- Structured Data (JSON-LD for Google) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SpecWise",
+      "description": "Free PC analyzer that helps users understand what their computer can handle based on hardware specifications",
+      "url": "https://specwise.com",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "PC Performance Analysis",
+        "Hardware Compatibility Checker",
+        "Upgrade Recommendations",
+        "Gaming PC Requirements",
+        "Coding PC Requirements",
+        "Video Editing PC Requirements"
+      ]
+    }
+    </script>
     
     <link rel="stylesheet" href="style.css">
 </head>
@@ -19,30 +73,30 @@
     <div class="orb orb-2"></div>
 
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
         <div class="nav-container">
             <div class="logo">
                 <!-- Logo icon (lightning bolt SVG) -->
-                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
                 </svg>
                 <span class="logo-text">SpecWise</span>
             </div>
             <div class="nav-tabs">
-                <button class="nav-tab active" data-tab="home">Home</button>
-                <button class="nav-tab" data-tab="analyzer">Analyzer</button>
-                <button class="nav-tab" data-tab="learn">Learn</button>
+                <button class="nav-tab active" data-tab="home" aria-label="Home">Home</button>
+                <button class="nav-tab" data-tab="analyzer" aria-label="Analyzer">Analyzer</button>
+                <button class="nav-tab" data-tab="learn" aria-label="Learn">Learn</button>
             </div>
         </div>
     </nav>
 
     <!-- Main Content Container -->
-    <main class="main-content">
+    <main class="main-content" role="main">
         
         <!-- HOME TAB -->
-        <section id="home-tab" class="tab-content active">
+        <section id="home-tab" class="tab-content active" aria-labelledby="home-heading">
             <div class="hero-section">
-                <h1 class="hero-title">
+                <h1 id="home-heading" class="hero-title">
                     <span class="gradient-text">Stop Guessing.</span>
                     <br>
                     <span class="white-text">Know Your PC.</span>
@@ -50,9 +104,9 @@
                 <p class="hero-subtitle">
                     SpecWise analyzes your computer's hardware and tells you exactly what it can handle—in simple, human language. No tech jargon, just clarity.
                 </p>
-                <button class="cta-button" id="analyze-cta">
+                <button class="cta-button" id="analyze-cta" aria-label="Go to PC Analyzer">
                     <span>Analyze My PC</span>
-                    <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
                 </button>
@@ -60,43 +114,43 @@
 
             <!-- Feature Cards -->
             <div class="feature-grid">
-                <div class="feature-card">
-                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <article class="feature-card">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <circle cx="12" cy="12" r="10"/>
                         <path d="M12 6v6l4 2"/>
                     </svg>
                     <h3 class="feature-title">Performance Score</h3>
                     <p class="feature-desc">Get a clear 0-100 rating of your PC capabilities</p>
-                </div>
-                <div class="feature-card">
-                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                </article>
+                <article class="feature-card">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <rect x="4" y="4" width="16" height="16" rx="2"/>
                         <rect x="9" y="9" width="6" height="6"/>
                         <path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3"/>
                     </svg>
                     <h3 class="feature-title">Smart Analysis</h3>
                     <p class="feature-desc">Understand what tasks your hardware can handle</p>
-                </div>
-                <div class="feature-card">
-                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                </article>
+                <article class="feature-card">
+                    <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
                     </svg>
                     <h3 class="feature-title">Upgrade Tips</h3>
                     <p class="feature-desc">Receive personalized suggestions to boost performance</p>
-                </div>
+                </article>
             </div>
         </section>
 
         <!-- ANALYZER TAB -->
-        <section id="analyzer-tab" class="tab-content">
-            <h2 class="section-title">PC Performance Analyzer</h2>
+        <section id="analyzer-tab" class="tab-content" aria-labelledby="analyzer-heading">
+            <h2 id="analyzer-heading" class="section-title">PC Performance Analyzer</h2>
             
             <div class="analyzer-container">
-                <div class="analyzer-form">
+                <form class="analyzer-form" aria-label="PC specifications form">
                     <!-- RAM Selection -->
                     <div class="form-group">
-                        <label class="form-label">RAM (Memory)</label>
-                        <select id="ram-select" class="form-select">
+                        <label for="ram-select" class="form-label">RAM (Memory)</label>
+                        <select id="ram-select" class="form-select" aria-required="true">
                             <option value="">Select RAM</option>
                             <option value="2">2GB</option>
                             <option value="4">4GB</option>
@@ -109,43 +163,43 @@
                     <!-- CPU Selection -->
                     <div class="form-group">
                         <label class="form-label">CPU Level</label>
-                        <div class="button-group">
-                            <button type="button" class="option-button" data-value="low">
+                        <div class="button-group" role="group" aria-label="CPU level selection">
+                            <button type="button" class="option-button" data-value="low" aria-label="Low CPU">
                                 <span class="option-label">Low</span>
                                 <span class="option-desc">Basic processors</span>
                             </button>
-                            <button type="button" class="option-button" data-value="medium">
+                            <button type="button" class="option-button" data-value="medium" aria-label="Medium CPU">
                                 <span class="option-label">Medium</span>
                                 <span class="option-desc">Mid-range CPUs</span>
                             </button>
-                            <button type="button" class="option-button" data-value="high">
+                            <button type="button" class="option-button" data-value="high" aria-label="High CPU">
                                 <span class="option-label">High</span>
                                 <span class="option-desc">Premium chips</span>
                             </button>
                         </div>
-                        <input type="hidden" id="cpu-input">
+                        <input type="hidden" id="cpu-input" aria-required="true">
                     </div>
 
                     <!-- Storage Selection -->
                     <div class="form-group">
                         <label class="form-label">Storage Type</label>
-                        <div class="button-group storage-buttons">
-                            <button type="button" class="option-button" data-value="hdd">
+                        <div class="button-group storage-buttons" role="group" aria-label="Storage type selection">
+                            <button type="button" class="option-button" data-value="hdd" aria-label="HDD storage">
                                 <span class="option-label">HDD</span>
                                 <span class="option-desc">Traditional hard drive</span>
                             </button>
-                            <button type="button" class="option-button" data-value="ssd">
+                            <button type="button" class="option-button" data-value="ssd" aria-label="SSD storage">
                                 <span class="option-label">SSD</span>
                                 <span class="option-desc">Solid state drive</span>
                             </button>
                         </div>
-                        <input type="hidden" id="storage-input">
+                        <input type="hidden" id="storage-input" aria-required="true">
                     </div>
 
                     <!-- Usage Selection -->
                     <div class="form-group">
-                        <label class="form-label">Primary Usage</label>
-                        <select id="usage-select" class="form-select">
+                        <label for="usage-select" class="form-label">Primary Usage</label>
+                        <select id="usage-select" class="form-select" aria-required="true">
                             <option value="">Select usage</option>
                             <option value="browsing">Browsing</option>
                             <option value="coding">Coding</option>
@@ -159,46 +213,46 @@
                     </button>
 
                     <!-- System Details Button -->
-                    <button type="button" class="system-details-button" id="system-details-button">
-                        <svg class="system-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <button type="button" class="system-details-button" id="system-details-button" aria-label="View system details">
+                        <svg class="system-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <circle cx="12" cy="12" r="3"/>
                             <path d="M12 1v6m0 6v6m5.2-14.2l-4.2 4.2m0 6l-4.2 4.2m14.2-5.2h-6m-6 0H1m14.2 5.2l-4.2-4.2m0-6l-4.2-4.2"/>
                         </svg>
                         <span>View My System Details</span>
                     </button>
-                </div>
+                </form>
 
                 <!-- Results Section (Hidden by default) -->
-                <div id="results-section" class="results-section" style="display: none;">
+                <div id="results-section" class="results-section" style="display: none;" aria-live="polite">
                     <!-- Performance Score -->
-                    <div class="score-card">
+                    <article class="score-card">
                         <h3 class="score-title">Performance Score</h3>
                         <div class="score-circle-container">
-                            <svg class="score-circle" viewBox="0 0 200 200">
+                            <svg class="score-circle" viewBox="0 0 200 200" aria-hidden="true">
                                 <circle class="score-bg" cx="100" cy="100" r="80"/>
                                 <circle class="score-fill" cx="100" cy="100" r="80" id="score-progress"/>
                             </svg>
-                            <div class="score-number" id="score-number">0</div>
+                            <div class="score-number" id="score-number" aria-label="Performance score">0</div>
                         </div>
                         <p class="score-label" id="score-label">Calculating...</p>
-                    </div>
+                    </article>
 
                     <!-- Can Handle -->
-                    <div id="can-handle-card" class="result-card" style="display: none;">
+                    <article id="can-handle-card" class="result-card" style="display: none;">
                         <h3 class="result-title">
-                            <svg class="result-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg class="result-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                                 <polyline points="22 4 12 14.01 9 11.01"/>
                             </svg>
                             Your PC Can Handle
                         </h3>
                         <ul class="result-list" id="can-handle-list"></ul>
-                    </div>
+                    </article>
 
                     <!-- Might Struggle -->
-                    <div id="might-struggle-card" class="result-card" style="display: none;">
+                    <article id="might-struggle-card" class="result-card" style="display: none;">
                         <h3 class="result-title">
-                            <svg class="result-icon warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg class="result-icon warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                                 <line x1="12" y1="9" x2="12" y2="13"/>
                                 <line x1="12" y1="17" x2="12.01" y2="17"/>
@@ -206,12 +260,12 @@
                             Might Struggle With
                         </h3>
                         <ul class="result-list" id="might-struggle-list"></ul>
-                    </div>
+                    </article>
 
                     <!-- Not Recommended -->
-                    <div id="not-recommended-card" class="result-card" style="display: none;">
+                    <article id="not-recommended-card" class="result-card" style="display: none;">
                         <h3 class="result-title">
-                            <svg class="result-icon error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg class="result-icon error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <circle cx="12" cy="12" r="10"/>
                                 <line x1="15" y1="9" x2="9" y2="15"/>
                                 <line x1="9" y1="9" x2="15" y2="15"/>
@@ -219,56 +273,56 @@
                             Not Recommended
                         </h3>
                         <ul class="result-list" id="not-recommended-list"></ul>
-                    </div>
+                    </article>
 
                     <!-- Upgrade Suggestions -->
-                    <div id="upgrades-card" class="result-card upgrade-card" style="display: none;">
+                    <article id="upgrades-card" class="result-card upgrade-card" style="display: none;">
                         <h3 class="result-title">
-                            <svg class="result-icon upgrade" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg class="result-icon upgrade" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
                             </svg>
                             Upgrade Suggestions
                         </h3>
                         <ul class="result-list" id="upgrades-list"></ul>
-                    </div>
+                    </article>
                 </div>
             </div>
         </section>
 
         <!-- LEARN TAB -->
-        <section id="learn-tab" class="tab-content">
-            <h2 class="section-title">Understanding Your PC</h2>
+        <section id="learn-tab" class="tab-content" aria-labelledby="learn-heading">
+            <h2 id="learn-heading" class="section-title">Understanding Your PC</h2>
             
             <div class="learn-grid">
-                <div class="learn-card">
-                    <div class="learn-emoji">🧠</div>
+                <article class="learn-card">
+                    <div class="learn-emoji" aria-hidden="true">🧠</div>
                     <h3 class="learn-title">What is RAM?</h3>
                     <p class="learn-text">
                         RAM (Random Access Memory) is your computer's short-term memory. It temporarily stores data that your PC is actively using. More RAM means you can run more programs simultaneously without slowdowns. Think of it like your desk—a bigger desk lets you spread out more work at once.
                     </p>
-                </div>
-                <div class="learn-card">
-                    <div class="learn-emoji">⚡</div>
+                </article>
+                <article class="learn-card">
+                    <div class="learn-emoji" aria-hidden="true">⚡</div>
                     <h3 class="learn-title">What is CPU?</h3>
                     <p class="learn-text">
                         The CPU (Central Processing Unit) is the brain of your computer. It processes all instructions and calculations. A faster CPU means quicker performance for everything from opening apps to rendering videos. It's like having a faster worker completing tasks.
                     </p>
-                </div>
-                <div class="learn-card">
-                    <div class="learn-emoji">💾</div>
+                </article>
+                <article class="learn-card">
+                    <div class="learn-emoji" aria-hidden="true">💾</div>
                     <h3 class="learn-title">Why SSD Matters</h3>
                     <p class="learn-text">
                         SSDs (Solid State Drives) are much faster than traditional HDDs. They make your computer boot up faster, load apps quicker, and feel more responsive overall. Switching from HDD to SSD is often the single best upgrade you can make—it's like upgrading from a bicycle to a sports car.
                     </p>
-                </div>
+                </article>
             </div>
 
-            <div class="about-section">
+            <article class="about-section">
                 <h3 class="about-title">About SpecWise</h3>
                 <p class="about-text">
                     SpecWise was created to help everyday users understand their computer's capabilities without needing a degree in computer science. We believe technology should be accessible to everyone, and knowing what your PC can do is the first step to getting the most out of it. Whether you're considering an upgrade or just curious about your current setup, SpecWise gives you clear, honest answers.
                 </p>
-            </div>
+            </article>
         </section>
 
     </main>
