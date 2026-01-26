@@ -75,6 +75,53 @@ storageButtons.forEach(button => {
 });
 
 // ====================================
+// SYSTEM DETAILS BUTTON
+// ====================================
+
+const systemDetailsButton = document.getElementById('system-details-button');
+
+if (systemDetailsButton) {
+    systemDetailsButton.addEventListener('click', () => {
+        // Detect user's operating system
+        const userAgent = navigator.userAgent.toLowerCase();
+        const platform = navigator.platform.toLowerCase();
+        
+        let systemURL = '';
+        let systemName = '';
+        
+        // Windows detection
+        if (userAgent.indexOf('win') !== -1 || platform.indexOf('win') !== -1) {
+            systemURL = 'ms-settings:about';
+            systemName = 'Windows Settings';
+        }
+        // macOS detection
+        else if (userAgent.indexOf('mac') !== -1 || platform.indexOf('mac') !== -1) {
+            systemURL = 'x-apple.systempreferences:com.apple.SystemProfiler';
+            systemName = 'System Information';
+        }
+        // Linux detection
+        else if (userAgent.indexOf('linux') !== -1 || platform.indexOf('linux') !== -1) {
+            // Linux doesn't have a universal settings URL, show instructions
+            alert('On Linux, you can view system details by:\n\n• Opening System Settings\n• Running "sudo lshw -short" in Terminal\n• Using "neofetch" or "screenfetch"');
+            return;
+        }
+        // Fallback for other systems
+        else {
+            alert('Unable to detect your operating system.\n\nTo view system details:\n• Windows: Settings → System → About\n• macOS: Apple menu → About This Mac\n• Linux: System Settings or Terminal commands');
+            return;
+        }
+        
+        // Try to open system settings
+        const newWindow = window.open(systemURL, '_blank');
+        
+        // Fallback if URL scheme doesn't work
+        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+            alert(`To view your system details:\n\nOpen ${systemName} and navigate to the "About" section to see your:\n• RAM (Memory)\n• CPU (Processor)\n• Storage type and capacity\n\nThen come back here and enter those details!`);
+        }
+    });
+}
+
+// ====================================
 // PERFORMANCE CALCULATION LOGIC
 // ====================================
 
