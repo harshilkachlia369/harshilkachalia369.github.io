@@ -188,95 +188,160 @@ function calculatePerformance(ram, cpu, storage, usage) {
         canHandle.push('Heavy multitasking with 20+ browser tabs');
         canHandle.push('4K video streaming without buffering');
         canHandle.push('Professional photo editing (Photoshop, Lightroom)');
+        canHandle.push('Running virtual machines');
         
         if (usage === 'gaming') {
-            canHandle.push('Modern AAA games at high/ultra settings');
+            canHandle.push('Modern AAA games at high/ultra settings (1080p-1440p)');
             canHandle.push('VR gaming experiences');
+            canHandle.push('Game streaming and recording simultaneously');
         }
         
         if (usage === 'videoediting') {
             canHandle.push('4K video editing with multiple layers');
             canHandle.push('Real-time color grading and effects');
+            canHandle.push('Working with RAW footage');
         }
         
         if (usage === 'coding') {
             canHandle.push('Running multiple Docker containers');
             canHandle.push('Large-scale IDE projects with IntelliSense');
+            canHandle.push('Building and compiling large codebases');
         }
+        
+        if (usage === 'browsing') {
+            canHandle.push('Unlimited tabs without slowdown');
+            canHandle.push('Multiple web apps running simultaneously');
+        }
+        
+        // Upgrades for high-end
+        if (ram === 16) {
+            upgrades.push('Consider 32GB RAM if working with very large projects or datasets');
+        }
+        if (usage === 'gaming') {
+            upgrades.push('Ensure you have a dedicated GPU (RTX 3060 or better) for optimal gaming');
+        }
+        if (usage === 'videoediting') {
+            upgrades.push('A dedicated GPU will significantly speed up rendering and effects');
+        }
+        upgrades.push('Your CPU and RAM are excellent - focus on GPU for graphics-intensive tasks');
+        upgrades.push('Consider adding more SSD storage if you work with large files');
     }
     // Mid-range configuration
     else if (ram >= 8 && cpu === 'medium') {
-        canHandle.push('Smooth web browsing with 10+ tabs');
+        canHandle.push('Smooth web browsing with 10-15 tabs');
         canHandle.push('Microsoft Office and productivity apps');
-        canHandle.push('Light photo editing');
+        canHandle.push('Light photo editing (basic Photoshop, GIMP)');
         canHandle.push('1080p video streaming');
+        canHandle.push('Video calls and conferencing');
         
         if (usage === 'gaming') {
-            canHandle.push('Esports titles (Valorant, CS:GO, League)');
-            canHandle.push('Games from 2015-2020 at medium settings');
-            mightStruggle.push('Latest AAA games at ultra settings');
+            canHandle.push('Esports titles (Valorant, CS:GO, League of Legends)');
+            canHandle.push('Games from 2015-2020 at medium-high settings');
+            canHandle.push('Indie and casual games');
+            mightStruggle.push('Latest AAA games at ultra settings (2023+)');
             mightStruggle.push('Ray tracing enabled games');
+            mightStruggle.push('Gaming while streaming');
         }
         
         if (usage === 'videoediting') {
-            canHandle.push('1080p video editing');
+            canHandle.push('1080p video editing with basic effects');
+            canHandle.push('Short videos and social media content');
             mightStruggle.push('4K video editing');
             mightStruggle.push('Complex effects and transitions');
+            mightStruggle.push('Working with RAW or high-bitrate footage');
         }
         
         if (usage === 'coding') {
             canHandle.push('Web development (VS Code, Node.js)');
-            canHandle.push('Basic backend development');
-            mightStruggle.push('Heavy virtualization or Android Studio');
+            canHandle.push('Backend development (Python, Java)');
+            canHandle.push('Single Docker container development');
+            mightStruggle.push('Heavy virtualization or multiple containers');
+            mightStruggle.push('Large Android Studio projects');
+            mightStruggle.push('Machine learning model training');
+        }
+        
+        if (usage === 'browsing') {
+            mightStruggle.push('More than 20 tabs with heavy web apps');
+        }
+        
+        // Upgrades for mid-range
+        if (storage === 'hdd') {
+            upgrades.push('🔥 PRIORITY: Upgrade to SSD - this will give you the biggest speed boost!');
+        }
+        if (ram === 8) {
+            upgrades.push('Upgrade to 16GB RAM for smoother multitasking and better performance');
+        }
+        if (usage === 'gaming' || usage === 'videoediting') {
+            upgrades.push('Consider upgrading to 16GB RAM for better ' + (usage === 'gaming' ? 'gaming' : 'video editing') + ' performance');
+        }
+        if (cpu === 'medium') {
+            upgrades.push('CPU is decent, but upgrading would help with intensive tasks');
         }
     }
     // Low-end configuration
     else {
         canHandle.push('Basic web browsing (3-5 tabs)');
-        canHandle.push('Email and document editing');
+        canHandle.push('Email and document editing (Word, Google Docs)');
         canHandle.push('Music and podcast streaming');
+        canHandle.push('Watching videos (480p-720p)');
         
         mightStruggle.push('Multiple browser tabs (10+)');
-        mightStruggle.push('HD video streaming');
+        mightStruggle.push('HD video streaming (1080p)');
         mightStruggle.push('Basic photo editing');
+        mightStruggle.push('Running multiple applications simultaneously');
         
         if (usage === 'gaming') {
             notRecommended.push('Modern gaming (2020+)');
             notRecommended.push('VR experiences');
-            mightStruggle.push('Older casual games');
+            notRecommended.push('Graphics-intensive games');
+            mightStruggle.push('Older casual games and retro titles');
         }
         
         if (usage === 'videoediting') {
             notRecommended.push('Video editing of any kind');
             notRecommended.push('Content creation workflows');
+            notRecommended.push('Any video rendering');
         }
         
         if (usage === 'coding') {
             mightStruggle.push('Running local development servers');
-            mightStruggle.push('Using modern IDEs');
-            notRecommended.push('Mobile app development');
+            mightStruggle.push('Using modern IDEs (VS Code with extensions)');
+            notRecommended.push('Mobile app development (Android Studio)');
+            notRecommended.push('Running virtual machines or containers');
+        }
+        
+        if (usage === 'browsing') {
+            canHandle.push('Light productivity work');
+        } else {
+            notRecommended.push('Professional work in ' + usage);
+        }
+        
+        // Upgrades for low-end
+        upgrades.push('🔥 CRITICAL: Your system needs significant upgrades for better performance');
+        if (storage === 'hdd') {
+            upgrades.push('🔥 #1 PRIORITY: Upgrade to SSD - instant 3-5x speed boost for $50-100');
+        }
+        if (ram < 8) {
+            upgrades.push('🔥 #2 PRIORITY: Upgrade to at least 8GB RAM (16GB recommended)');
+        }
+        if (cpu === 'low') {
+            upgrades.push('CPU upgrade would provide major performance improvements');
+        }
+        if (usage !== 'browsing') {
+            upgrades.push('For ' + usage + ', consider a complete system upgrade or newer PC');
         }
     }
     
-    // Generate upgrade suggestions
-    if (storage === 'hdd') {
-        upgrades.push('Upgrade to SSD - this is the #1 best upgrade for instant speed boost');
+    // Additional context-specific upgrades
+    if (storage === 'hdd' && !upgrades.some(u => u.includes('SSD'))) {
+        upgrades.push('Upgrade to SSD for faster boot times and application loading');
     }
     
-    if (ram < 8 && usage !== 'browsing') {
-        upgrades.push('Upgrade to at least 8GB RAM for smoother multitasking');
-    }
-    
-    if (ram < 16 && (usage === 'videoediting' || usage === 'gaming')) {
-        upgrades.push(`Consider 16GB RAM for optimal ${usage === 'videoediting' ? 'video editing' : 'gaming'} experience`);
-    }
-    
-    if (cpu === 'low' && usage !== 'browsing') {
-        upgrades.push('CPU upgrade would provide significant performance improvements');
-    }
-    
-    if (ram >= 32 && cpu === 'high' && storage === 'ssd') {
-        upgrades.push('Your setup is excellent! Consider a GPU upgrade if gaming/rendering');
+    // Always provide at least one upgrade suggestion
+    if (upgrades.length === 0) {
+        upgrades.push('Your system is well-balanced! Consider upgrading when new technology becomes available');
+        upgrades.push('Keep your system updated with latest drivers and software');
+        upgrades.push('Regular maintenance (disk cleanup, malware scans) keeps performance optimal');
     }
     
     return {
@@ -312,10 +377,10 @@ function displayResults(results) {
     } else if (results.score >= 40) {
         scoreLabel.textContent = 'Fair performance - Suitable for basic tasks';
     } else {
-        scoreLabel.textContent = 'Limited performance - Consider upgrades';
+        scoreLabel.textContent = 'Limited performance - Upgrades highly recommended';
     }
     
-    // Display capability lists
+    // Display capability lists - ALWAYS SHOW IF THERE'S CONTENT
     displayList('can-handle', results.canHandle);
     displayList('might-struggle', results.mightStruggle);
     displayList('not-recommended', results.notRecommended);
@@ -330,7 +395,8 @@ function displayList(type, items) {
     const card = document.getElementById(`${type}-card`);
     const list = document.getElementById(`${type}-list`);
     
-    if (items.length > 0) {
+    // ALWAYS check if items exist and show/hide accordingly
+    if (items && items.length > 0) {
         card.style.display = 'block';
         list.innerHTML = '';
         items.forEach(item => {
@@ -382,7 +448,7 @@ function animateScore(finalScore) {
 
 function addSVGGradient() {
     const svg = document.querySelector('.score-circle');
-    if (!svg.querySelector('defs')) {
+    if (svg && !svg.querySelector('defs')) {
         const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
         const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
         gradient.setAttribute('id', 'scoreGradient');
