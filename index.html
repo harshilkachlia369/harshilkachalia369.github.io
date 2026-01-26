@@ -3,631 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚖️ Beam Scale - Compare Prices</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px;
-            text-align: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
-            animation: float 20s linear infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-100px); }
-        }
-
-        .header h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            position: relative;
-            z-index: 1;
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.95;
-            position: relative;
-            z-index: 1;
-        }
-
-        .tabs {
-            display: flex;
-            background: #f8f9fa;
-            border-bottom: 3px solid #667eea;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 20px;
-            background: none;
-            border: none;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #666;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .tab:hover {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-        }
-
-        .tab.active {
-            background: white;
-            color: #667eea;
-        }
-
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: #667eea;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 30px;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .search-container {
-            margin-bottom: 30px;
-        }
-
-        .search-box {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 18px 25px;
-            font-size: 1.1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 50px;
-            outline: none;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .search-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-        }
-
-        .search-btn {
-            padding: 18px 45px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-
-        .filters-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .filter-title {
-            font-size: 1.4rem;
-            color: #333;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .filter-group {
-            margin-bottom: 25px;
-        }
-
-        .filter-label {
-            display: block;
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 12px;
-            font-size: 1.05rem;
-        }
-
-        .filter-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-        }
-
-        .filter-options label {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 2px solid transparent;
-        }
-
-        .filter-options label:hover {
-            background: #f0f0f0;
-            border-color: #667eea;
-        }
-
-        .filter-checkbox, .store-filter, .brand-filter {
-            margin-right: 10px;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .sort-select {
-            width: 100%;
-            padding: 12px 18px;
-            font-size: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .sort-select:focus {
-            border-color: #667eea;
-        }
-
-        .clear-filters-btn {
-            width: 100%;
-            padding: 14px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-        }
-
-        .clear-filters-btn:hover {
-            background: #c82333;
-            transform: translateY(-2px);
-        }
-
-        .results-count {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .product-section-title {
-            font-size: 1.6rem;
-            color: #333;
-            margin: 30px 0 15px 0;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
-            font-weight: 700;
-        }
-
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .result-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .result-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            border-color: #667eea;
-        }
-
-        .store-badge {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .store-badge.amazon { background: linear-gradient(135deg, #FF9900 0%, #FF6B00 100%); }
-        .store-badge.flipkart { background: linear-gradient(135deg, #2874F0 0%, #1557BF 100%); }
-        .store-badge.meesho { background: linear-gradient(135deg, #F43397 0%, #D11876 100%); }
-        .store-badge.myntra { background: linear-gradient(135deg, #FF3F6C 0%, #E62958 100%); }
-        .store-badge.ajio { background: linear-gradient(135deg, #C3A05B 0%, #9D7D3E 100%); }
-
-        .product-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 10px;
-            min-height: 50px;
-        }
-
-        .product-price {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-
-        .view-btn {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .view-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-
-        .no-results h3 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .no-results p {
-            font-size: 1.1rem;
-            color: #777;
-        }
-
-        .login-container {
-            max-width: 450px;
-            margin: 50px auto;
-            padding: 40px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .login-container h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .transactions {
-            display: none;
-        }
-
-        .transactions.active {
-            display: block;
-        }
-
-        .transaction-card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            border-left: 4px solid #667eea;
-            transition: all 0.3s ease;
-        }
-
-        .transaction-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        .transaction-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-
-        .transaction-item {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .transaction-date {
-            color: #777;
-            font-size: 0.95rem;
-        }
-
-        .transaction-amount {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .transaction-status {
-            display: inline-block;
-            padding: 6px 16px;
-            background: #28a745;
-            color: white;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2.5rem;
-            }
-
-            .results-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .filter-options {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <title>Luxe Price Tracker</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Luxe Price Tracker</h1>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
     <div class="container">
-        <div class="header">
-            <h1>⚖️ Beam Scale</h1>
-            <p>Compare prices across top Indian retailers and find the best deals</p>
-        </div>
-
         <div class="tabs">
-            <button class="tab active" onclick="switchTab(0)">Search Products</button>
-            <button class="tab" onclick="switchTab(1)">Amazon Transactions</button>
-        </div>
-
-        <div class="tab-content active" id="search-tab">
-            <div class="search-container">
-                <div class="search-box">
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search for products like 'iPhone 15', 'Nike Shoes', 'Samsung TV', 'Boat Earbuds'...">
-                    <button class="search-btn" onclick="searchProducts()">Search</button>
-                </div>
-
-                <div class="filters-section">
-                    <h3 class="filter-title">Filters</h3>
-                    
-                    <div class="filter-group">
-                        <label class="filter-label">Price Range</label>
-                        <div class="filter-options">
-                            <label><input type="checkbox" class="filter-checkbox" value="0-500" onchange="applyFilters()"> Under ₹500</label>
-                            <label><input type="checkbox" class="filter-checkbox" value="500-1000" onchange="applyFilters()"> ₹500 - ₹1,000</label>
-                            <label><input type="checkbox" class="filter-checkbox" value="1000-2500" onchange="applyFilters()"> ₹1,000 - ₹2,500</label>
-                            <label><input type="checkbox" class="filter-checkbox" value="2500-5000" onchange="applyFilters()"> ₹2,500 - ₹5,000</label>
-                            <label><input type="checkbox" class="filter-checkbox" value="5000-10000" onchange="applyFilters()"> ₹5,000 - ₹10,000</label>
-                            <label><input type="checkbox" class="filter-checkbox" value="10000-25000" onchange="applyFilters()"> ₹10,000 - ₹25,000</label>
-                            <label><input type="checkbox" class="filter-checkbox" value="25000-50000" onchange="applyFilters()"> ₹25,000 - ₹50,000</label>
-                            <label><input type="checkbox" class="filter-checkbox" value="50000-100000" onchange="applyFilters()"> ₹50,000 - ₹1,00,000</label>
-                            <label><input type="checkbox" class="filter-checkbox" value="100000-9999999" onchange="applyFilters()"> Above ₹1,00,000</label>
-                        </div>
-                    </div>
-
-                    <div class="filter-group">
-                        <label class="filter-label">Stores</label>
-                        <div class="filter-options">
-                            <label><input type="checkbox" class="store-filter" value="amazon" checked onchange="applyFilters()"> Amazon</label>
-                            <label><input type="checkbox" class="store-filter" value="flipkart" checked onchange="applyFilters()"> Flipkart</label>
-                            <label><input type="checkbox" class="store-filter" value="meesho" checked onchange="applyFilters()"> Meesho</label>
-                            <label><input type="checkbox" class="store-filter" value="myntra" checked onchange="applyFilters()"> Myntra</label>
-                            <label><input type="checkbox" class="store-filter" value="ajio" checked onchange="applyFilters()"> Ajio</label>
-                        </div>
-                    </div>
-
-                    <div class="filter-group">
-                        <label class="filter-label">Sort By</label>
-                        <select id="sortBy" class="sort-select" onchange="applyFilters()">
-                            <option value="relevance">Relevance</option>
-                            <option value="price-low">Price: Low to High</option>
-                            <option value="price-high">Price: High to Low</option>
-                            <option value="name">Name: A to Z</option>
-                        </select>
-                    </div>
-
-                    <button class="clear-filters-btn" onclick="clearFilters()">Clear All Filters</button>
-                </div>
-            </div>
-
-            <div id="results" class="no-results">
-                <h3>Start searching to compare prices!</h3>
-                <p>Try searching: "iPhone 15 Pro", "Boat Airdopes", "Nike Air Max", "Samsung TV", "Laptop"</p>
-            </div>
-        </div>
-
-        <div class="tab-content" id="transaction-tab">
-            <div class="login-container" id="loginForm">
-                <h2>Login to Amazon</h2>
-                <div class="form-group">
-                    <label>Email or Phone</label>
-                    <input type="text" id="email" placeholder="Enter your email or phone">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="password" placeholder="Enter your password">
-                </div>
-                <button class="login-btn" onclick="login()">Sign In</button>
-            </div>
-
-            <div class="transactions" id="transactionList">
-                <h2 style="margin-bottom: 30px; color: #333;">Your Amazon Transactions</h2>
-                <div id="transactionData"></div>
-            </div>
+            <button class="tab-button active" data-tab="search">Search Products</button>
+            <button class="tab-button" data-tab="transactions">Amazon Transactions</button>
         </div>
     </div>
 
-    <script>
-        const productDatabase = [
-            // Electronics - Phones (Under 10k)
-            { name: 'Redmi 12C (64GB)', brand: 'xiaomi', category: 'phone', prices: { amazon: 7999, flipkart: 7799, meesho: 7599, myntra: 7899, ajio: 7699 } },
-            { name: 'Redmi 12C (128GB)', brand: 'xiaomi', category: 'phone', prices: { amazon: 8999, flipkart: 8799, meesho: 8599, myntra: 8899, ajio: 8699 } },
-            { name: 'Realme Narzo N53 (64GB)', brand: 'realme', category: 'phone', prices: { amazon: 8499, flipkart: 8299, meesho: 8099, myntra: 8399, ajio: 8199 } },
-            { name: 'Realme Narzo N53 (128GB)', brand: 'realme', category: 'phone', prices: { amazon: 9499, flipkart: 9299, meesho: 9099, myntra: 9399, ajio: 9199 } },
-            { name: 'Samsung Galaxy M14 5G (128GB)', brand: 'samsung', category: 'phone', prices: { amazon: 9999, flipkart: 9799, meesho: 9599, myntra: 9899, ajio: 9699 } },
-            
-            // Electronics - Phones (10k-20k)
-            { name: 'Motorola G67 Power 5G (128GB)', brand: 'motorola', category: 'phone', prices: { amazon: 13999, flipkart: 13799, meesho: 13599, myntra: 13899, ajio: 13699 } },
-            { name: 'Motorola G67 Power 5G (256GB)', brand: 'motorola', category: 'phone', prices: { amazon: 15999, flipkart: 15799, meesho: 15599, myntra: 15899, ajio: 15699 } },
-            { name: 'OnePlus Nord CE 3 Lite (128GB)', brand: 'oneplus', category: 'phone', prices: { amazon: 16999, flipkart: 16799, meesho: 16599, myntra: 16899, ajio: 16699 } },
-            { name: 'OnePlus Nord CE 3 Lite (256GB)', brand: 'oneplus', category: 'phone', prices: { amazon: 18999, flipkart: 18799, meesho: 18599, myntra: 18899, ajio: 18699 } },
-            { name: 'Realme 11 Pro (128GB)', brand: 'realme', category: 'phone', prices: { amazon: 19999, flipkart: 19799, meesho: 19599, myntra: 19899, ajio: 19699 } },
-            
-            // Electronics - Phones (20k-50k)
-            { name: 'Samsung Galaxy S24 5G (128GB)', brand: 'samsung', category: 'phone', prices: { amazon: 44999, flipkart: 43999, meesho: 42999, myntra: 44799, ajio: 43799 } },
-            { name: 'Samsung Galaxy S24 5G (256GB)', brand: 'samsung', category: 'phone', prices: { amazon: 49999, flipkart: 48999, meesho: 47999, myntra: 49799, ajio: 48799 } },
-            { name: 'OnePlus 12 (256GB)', brand: 'oneplus', category: 'phone', prices: { amazon: 39999, flipkart: 38999, meesho: 37999, myntra: 39799, ajio: 38799 } },
-            { name: 'OnePlus 12 (512GB)', brand: 'oneplus', category: 'phone', prices: { amazon: 44999, flipkart: 43999, meesho: 42999, myntra: 44799, ajio: 43799 } },
-            { name: 'Nothing Phone 2 (256GB)', brand: 'nothing', category: 'phone', prices: { amazon: 34999, flipkart: 33999, meesho: 32999, myntra: 34799, ajio: 33799 } },
-            
-            // Electronics - Phones (Premium 50k+)
-            { name: 'iPhone 15 Pro 128GB', brand: 'apple', category: 'phone', prices: { amazon: 124900, flipkart: 123900, meesho: 122900, myntra: 124500, ajio: 123500 } },
-            { name: 'iPhone 15 Pro 256GB', brand: 'apple', category: 'phone', prices: { amazon: 134900, flipkart: 133900, meesho: 132900, myntra: 134500, ajio: 133500 } },
-            { name: 'iPhone 15 Pro 512GB', brand: 'apple', category: 'phone', prices: { amazon: 154900, flipkart: 153900, meesho: 152900, myntra: 154500, ajio: 153500 } },
-            { name: 'iPhone 15 Pro Max 256GB', brand: 'apple', category: 'phone', prices: { amazon: 144900, flipkart: 143900, meesho: 142900, myntra: 144500, ajio: 143500 } },
-            { name: 'iPhone 15 Pro Max 512GB', brand: 'apple', category: 'phone', prices: { amazon: 164900, flipkart: 163900, meesho: 162900, myntra: 164500, ajio: 163500 } },
-            { name: 'Samsung Galaxy S24 Ultra (512GB)', brand: 'samsung', category: 'phone', prices: { amazon: 104999, flipkart: 103999, meesho: 102999, myntra: 104799, ajio: 103799 } },
-            
-            // Electronics - Earbuds (Under 1k)
-            { name: 'boAt Airdopes 141', brand: 'boat', category: 'earbuds', prices: { amazon: 999, flipkart: 949, meesho: 899, myntra: 979, ajio: 929 } },
-            { name: 'boAt Airdopes 131', brand: 'boat', category: 'earbuds', prices: { amazon: 899, flipkart: 849, meesho: 799, myntra: 879, ajio: 829 } },
-            { name: 'Noise Buds VS104', brand: 'noise', category: 'earbuds', prices: { amazon: 799, flipkart: 749, meesho: 699, myntra: 779, ajio: 729 } },
-            { name: 'Realme Buds T100', brand: 'realme', category: 'earbuds', prices: { amazon: 999, flipkart: 949, meesho: 899, myntra: 979, ajio: 929 } },
-            { name: 'Boult Audio Z40', brand: 'boult', category: 'earbuds', prices: { amazon: 999, flipkart: 949, meesho: 899, myntra: 979, ajio: 929 } },
-            { name: 'pTron Bassbuds Duo', brand: 'ptron', category: 'earbuds', prices: { amazon: 649, flipkart: 599, meesho: 549, myntra: 629, ajio: 579 } },
-            { name: 'Mivi DuoPods A25', brand: 'mivi', category: 'earbuds', prices: { amazon: 849, flipkart: 799, meesho: 749, myntra: 829, ajio: 779 } },
-            
-            // Electronics - Earbuds (1k-3k)
-            { name: 'boAt Airdopes 161', brand: 'boat', category: 'earbuds', prices: { amazon: 1299, flipkart: 1249, meesho: 1199, myntra: 1279, ajio: 1229 } },
-            { name: 'boAt Airdopes 181', brand: 'boat', category: 'earbuds', prices: { amazon: 1599, flipkart: 1549, meesho: 1499, myntra: 1579, ajio: 1529 } },
-            { name: 'Noise Buds VS201', brand: 'noise', category: 'earbuds', prices: { amazon: 1199, flipkart: 1149, meesho: 1099, myntra: 1179, ajio: 1129 } },
-            { name: 'Realme Buds Air 3', brand: 'realme', category: 'earbuds', prices: { amazon: 2499, flipkart: 2449, meesho: 2399, myntra: 2479, ajio: 2429 } },
-            { name: 'OnePlus Nord Buds', brand: 'oneplus', category: 'earbuds', prices: { amazon: 2499, flipkart: 2449, meesho: 2399, myntra: 2479, ajio: 2429 } },
-            { name: '
+    <!-- Main Content -->
+    <main class="container main-content">
+        <!-- Search Tab -->
+        <div id="search-tab" class="tab-content active">
+            <!-- Search Bar with Filter -->
+            <div class="search-container">
+                <div class="search-bar">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search for any product..." class="search-input">
+                </div>
+                <button id="filterButton" class="filter-button">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="4" y1="21" x2="4" y2="14"></line>
+                        <line x1="4" y1="10" x2="4" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12" y2="3"></line>
+                        <line x1="20" y1="21" x2="20" y2="16"></line>
+                        <line x1="20" y1="12" x2="20" y2="3"></line>
+                        <line x1="1" y1="14" x2="7" y2="14"></line>
+                        <line x1="9" y1="8" x2="15" y2="8"></line>
+                        <line x1="17" y1="16" x2="23" y2="16"></line>
+                    </svg>
+                    Filters
+                </button>
+            </div>
+
+            <!-- Filter Panel -->
+            <div id="filterPanel" class="filter-panel hidden">
+                <div class="filter-header">
+                    <h3>Filters</h3>
+                    <button id="closeFilters" class="close-button">×</button>
+                </div>
+                <div class="filter-content">
+                    <!-- Platforms -->
+                    <div class="filter-section">
+                        <label class="filter-label">Platforms</label>
+                        <div class="checkbox-group" id="platformFilters">
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="Amazon"> Amazon
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="Flipkart"> Flipkart
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="Meesho"> Meesho
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="Ajio"> Ajio
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="Myntra"> Myntra
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="Snapdeal"> Snapdeal
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="filter-section">
+                        <label class="filter-label">Price Range (₹)</label>
+                        <div class="price-inputs">
+                            <input type="number" id="minPrice" placeholder="Min" class="price-input">
+                            <input type="number" id="maxPrice" placeholder="Max" class="price-input">
+                        </div>
+                    </div>
+
+                    <!-- Sort By -->
+                    <div class="filter-section">
+                        <label class="filter-label">Sort By</label>
+                        <select id="sortBy" class="sort-select">
+                            <option value="relevance">Relevance</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="discount">Highest Discount</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state hidden">
+                <div class="spinner"></div>
+                <p>Searching across platforms...</p>
+            </div>
+
+            <!-- Search Results -->
+            <div id="searchResults" class="search-results"></div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <p>Search for products to compare prices</p>
+            </div>
+        </div>
+
+        <!-- Amazon Transactions Tab -->
+        <div id="transactions-tab" class="tab-content">
+            <!-- Sign In State -->
+            <div id="signInState" class="sign-in-state">
+                <div class="sign-in-card">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <h2>Sign in to Amazon</h2>
+                    <p>View your transaction history and track orders</p>
+                    <button id="amazonSignIn" class="sign-in-button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                            <polyline points="10 17 15 12 10 7"></polyline>
+                            <line x1="15" y1="12" x2="3" y2="12"></line>
+                        </svg>
+                        Sign in with Amazon
+                    </button>
+                </div>
+            </div>
+
+            <!-- Transactions List -->
+            <div id="transactionsList" class="transactions-container hidden">
+                <div class="transactions-header">
+                    <h2>Transaction History</h2>
+                    <button id="signOutButton" class="sign-out-button">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Sign Out
+                    </button>
+                </div>
+                <div id="transactionsContent" class="transactions-list"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
